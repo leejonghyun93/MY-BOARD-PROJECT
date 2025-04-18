@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.dao.UserDao">
+
+    <select id="getMember"  resultType="com.example.board.dto.UserDto">
+        SELECT *
+        FROM t_member
+        WHERE userid = #{userid}
+    </select>
+
+    <update id="setLoginTime" parameterType="String">
+        update t_member set
+            loginTime=now()
+        where userid = #{userid}
+    </update>
+
+    <insert id="insert" parameterType="com.example.board.dto.UserDto">
+        INSERT INTO t_member (
+        userid,
+        passwd,
+        name,
+        age,
+        loginTime,
+        address,
+        detailAddress,
+        fulladdress,
+        phone,
+        email,
+        regDate,
+        updateDate
+        ) VALUES (
+        #{userid},
+        #{passwd},
+        #{name},
+        #{age},
+        NOW(),
+        #{address},
+        #{detailAddress},
+        #{fullAddress},
+        #{phone},
+        #{email},
+        NOW(),
+        NOW()
+        )
+    </insert>
+</mapper>
