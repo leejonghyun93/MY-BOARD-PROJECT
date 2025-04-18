@@ -2,10 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
 
-<c:set var="loginId"
-       value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userId') != null ? pageContext.request.session.getAttribute('userId') : ''}"/>
-<c:set var="loginOutLink" value="${loginId == '' ? '/login/login' : ''}"/>
-<c:set var="logout" value="${loginId == '' ? 'Login' : loginId}"/>
+<c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
+<c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
+<c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
+<c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
 
 <nav class="col-md-2 d-none d-md-block bg-light sidebar">
     <div class="sidebar-sticky">
@@ -16,7 +16,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/memberList">
+                <a class="nav-link" href="/memberList">
                     <span data-feather="users"></span> 회원 목록
                 </a>
             </li>

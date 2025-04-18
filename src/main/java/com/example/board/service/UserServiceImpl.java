@@ -1,9 +1,12 @@
 package com.example.board.service;
 
 import com.example.board.dao.UserDao;
+import com.example.board.dto.PageDTO;
 import com.example.board.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService  {
@@ -32,6 +35,20 @@ public class UserServiceImpl implements UserService  {
         userDao.setLoginTime(userid);
 
         return member;
+    }
+
+    @Override
+    public int getTotalCount(String searchValue) {
+        return userDao.getTotalCount(searchValue);
+    }
+
+    @Override
+    public List<UserDto> listWithPaging(PageDTO pageDTO) {
+        int startRow = pageDTO.getStartRow();
+        int pageSize = pageDTO.getPageSize();
+        String searchValue = pageDTO.getSearchValue();
+
+        return userDao.selectPagedMembers(startRow, pageSize, searchValue);
     }
 
 }

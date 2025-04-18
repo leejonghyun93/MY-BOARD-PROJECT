@@ -43,4 +43,28 @@
         NOW()
         )
     </insert>
+
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM t_member
+        <where>
+            <if test="searchValue != null and searchValue != ''">
+                name LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 페이징된 회원 목록 -->
+    <select id="selectPagedMembers" resultType="com.example.board.dto.UserDto">
+        SELECT *
+        FROM t_member
+        <where>
+            <if test="searchValue != null and searchValue != ''">
+                name LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
+        ORDER BY userid
+        LIMIT #{startRow}, #{pageSize}
+    </select>
 </mapper>

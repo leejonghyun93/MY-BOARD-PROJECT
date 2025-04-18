@@ -2,10 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
 
-<c:set var="loginId"
-       value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userId') != null ? pageContext.request.session.getAttribute('userId') : ''}"/>
+<c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
+<c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
-<c:set var="logout" value="${loginId == '' ? 'Login' : loginId}"/>
+<c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
 <!doctype html>
 <html lang="en">
 <head>
@@ -35,7 +35,6 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="mt-5">
                 <div class="register-container container mt-5">
-
                     <h2 class="text-center mb-4">회원가입</h2>
                     <form action="/member/register" method="post" onsubmit="return showAlert()"
                           id="registerForm">
