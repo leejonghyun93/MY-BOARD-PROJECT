@@ -34,84 +34,94 @@
         <%@ include file="/WEB-INF/views/layout/common/sidebar/sidebar.jsp" %>
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="mt-5">
-                <div class="register-container container mt-5">
-                    <h2 class="text-center mb-4">회원가입</h2>
-                    <form action="/member/register" method="post" onsubmit="return showAlert()"
-                          id="registerForm">
-                        <div class="form-group">
-                            <label for="userid">아이디</label>
-                            <div class="input-group">
-                                <input type="text" id="userid" name="userid" class="form-control" required
-                                       placeholder="아이디를 입력하세요">
-                                <div class="input-group-append">
-                                    <input type="button" id="validUserid" class="btn btn-outline-secondary">중복 확인
-                                    <c:if test="${not empty errorMessage}">
-                                        <div class="error-message">${errorMessage}</div>
-                                    </c:if>
+                <div class="container mt-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-5">
+                            <h2 class="text-center mb-4">회원가입</h2>
+                            <form action="/member/register" method="post" onsubmit="return showAlert()"
+                                  id="registerForm">
+                                <div class="form-group">
+                                    <label for="userid">아이디</label>
+                                    <div class="input-group">
+                                        <input type="text" id="userid" name="userid" class="form-control" required
+                                               placeholder="아이디를 입력하세요">
+                                        <div class="input-group-append">
+                                            <button type="button" id="validUserid" class="btn btn-outline-secondary">
+                                                중복 확인
+                                            </button>
+                                        </div>
+                                        <c:if test="${not empty errorMessage}">
+                                            <div class="text-danger mt-2" style="font-size: 0.9em;">
+                                                    ${errorMessage}
+                                            </div>
+                                        </c:if>
+                                    </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="userPwd">비밀번호</label>
+                                    <input type="password" id="userPwd" name="userPwd" class="form-control" required
+                                           placeholder="비밀번호를 입력하세요">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPwd">비밀번호 확인</label>
+                                    <input type="password" id="confirmPwd" name="confirmPwd" class="form-control"
+                                           required
+                                           placeholder="비밀번호 확인을 입력하세요">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="userName">이름</label>
+                                    <input type="text" id="userName" name="userName" class="form-control" required
+                                           placeholder="이름을 입력하세요">
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">나이</label>
+                                    <input type="number" id="age" name="age" class="form-control" required
+                                           placeholder="나이를 입력하세요">
+                                </div>
+                                <div class="form-group">
+                                    <label for="userAddress">주소</label>
+                                    <div class="input-group">
+                                        <input type="text" id="userAddress" name="userAddress" class="form-control"
+                                               required
+                                               placeholder="주소를 입력하세요" readonly>
+                                        <div class="input-group-append">
+                                            <button type="button" onclick="execDaumPostcode()"
+                                                    class="btn btn-outline-secondary">주소 찾기
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="detailAddress">나머지 주소</label>
+                                    <input type="text" id="detailAddress" name="detailAddress" class="form-control"
+                                           placeholder="나머지 주소를 입력하세요">
+                                </div>
+
+                                <input type="hidden" id="fullAddress" name="fullAddress">
+
+                                <div class="form-group">
+                                    <label for="userPhone">전화번호</label>
+                                    <input type="text" id="userPhone" name="userPhone" class="form-control" required
+                                           placeholder="전화번호를 입력하세요">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="userEmail">이메일</label>
+                                    <input type="email" id="userEmail" name="userEmail" class="form-control" required
+                                           placeholder="이메일을 입력하세요">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block">회원가입</button>
+                            </form>
+
+                            <div class="login-link text-center mt-3">
+                                <p>이미 계정이 있으신가요? <a href="<c:url value='/login/login' />">로그인</a></p>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="userPwd">비밀번호</label>
-                            <input type="password" id="userPwd" name="userPwd" class="form-control" required
-                                   placeholder="비밀번호를 입력하세요">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="confirmPwd">비밀번호 확인</label>
-                            <input type="password" id="confirmPwd" name="confirmPwd" class="form-control" required
-                                   placeholder="비밀번호 확인을 입력하세요">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="userName">이름</label>
-                            <input type="text" id="userName" name="userName" class="form-control" required
-                                   placeholder="이름을 입력하세요">
-                        </div>
-                        <div class="form-group">
-                            <label for="age">나이</label>
-                            <input type="number" id="age" name="age" class="form-control" required
-                                   placeholder="나이를 입력하세요">
-                        </div>
-                        <div class="form-group">
-                            <label for="userAddress">주소</label>
-                            <div class="input-group">
-                                <input type="text" id="userAddress" name="userAddress" class="form-control" required
-                                       placeholder="주소를 입력하세요" readonly>
-                                <div class="input-group-append">
-                                    <button type="button" onclick="execDaumPostcode()"
-                                            class="btn btn-outline-secondary">주소 찾기
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="detailAddress">나머지 주소</label>
-                            <input type="text" id="detailAddress" name="detailAddress" class="form-control"
-                                   placeholder="나머지 주소를 입력하세요">
-                        </div>
-
-                        <input type="hidden" id="fullAddress" name="fullAddress">
-
-                        <div class="form-group">
-                            <label for="userPhone">전화번호</label>
-                            <input type="text" id="userPhone" name="userPhone" class="form-control" required
-                                   placeholder="전화번호를 입력하세요">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="userEmail">이메일</label>
-                            <input type="email" id="userEmail" name="userEmail" class="form-control" required
-                                   placeholder="이메일을 입력하세요">
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block">회원가입</button>
-                    </form>
-
-                    <div class="login-link text-center mt-3">
-                        <p>이미 계정이 있으신가요? <a href="<c:url value='/login/login' />">로그인</a></p>
                     </div>
                 </div>
             </div>

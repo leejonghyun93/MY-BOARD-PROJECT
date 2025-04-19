@@ -116,11 +116,6 @@ public class UserController {
         session.setAttribute("userid", loggedInMember.getUserid());
         session.setAttribute("name", loggedInMember.getName());
 
-        // 리다이렉트 URL로 명시적으로 지정
-//        result.put("message", "로그인 성공");
-
-        // 클라이언트에게 리다이렉션 지시
-
         result.put("redirectUrl", "/"); // 리다이렉트할 URL
 
         return ResponseEntity.ok(result);
@@ -138,24 +133,20 @@ public class UserController {
     }
 
     /**회원 목록 **/
-    @RequestMapping ("/memberList")
+    @RequestMapping("/memberList")
     public String list(@RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
                        @RequestParam(required = false) String searchValue,
                        Model model) {
 
-        int totalCount = userService.getTotalCount(searchValue); // 검색 조건 포함된 count
+        int totalCount = userService.getTotalCount(searchValue);
         PageDTO<UserDto> pageDTO = new PageDTO<>(page, totalCount, size, searchValue, null);
-
         List<UserDto> list = userService.listWithPaging(pageDTO);
 
         model.addAttribute("memberList", list);
         model.addAttribute("pageDTO", pageDTO);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", size);
+
         model.addAttribute("listUrl", "/memberList");
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("searchValue", searchValue); // 이 라인을 추가해야 합니다!
 
         return "user/list";
     }
