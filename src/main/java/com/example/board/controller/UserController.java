@@ -138,7 +138,7 @@ public class UserController {
     }
 
     /**회원 목록 **/
-    @GetMapping("/memberList")
+    @RequestMapping ("/memberList")
     public String list(@RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
                        @RequestParam(required = false) String searchValue,
@@ -153,6 +153,7 @@ public class UserController {
         model.addAttribute("pageDTO", pageDTO);
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
+        model.addAttribute("listUrl", "/memberList");
         model.addAttribute("totalCount", totalCount);
         model.addAttribute("searchValue", searchValue); // 이 라인을 추가해야 합니다!
 
