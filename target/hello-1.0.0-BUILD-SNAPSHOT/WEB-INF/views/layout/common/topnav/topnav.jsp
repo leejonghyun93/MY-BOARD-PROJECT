@@ -89,7 +89,7 @@
             logoutForm.addEventListener("submit", function (e) {
                 e.preventDefault();
 
-                fetch("/logout", {
+                fetch("api/logout", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

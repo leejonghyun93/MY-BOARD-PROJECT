@@ -119,7 +119,7 @@
                             </form>
 
                             <div class="login-link text-center mt-3">
-                                <p>이미 계정이 있으신가요? <a href="<c:url value='/login/login' />">로그인</a></p>
+                                <p>이미 계정이 있으신가요? <a href="<c:url value='/login' />">로그인</a></p>
                             </div>
                         </div>
                     </div>
@@ -135,6 +135,9 @@
 
 <script>
     let isUseridChecked = false;
+    const idPattern = /^.{8,}$/; // 아이디는 8자 이상
+    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/; // 비밀번호는 영문, 숫자, 특수문자 포함 8자 이상
+
 
     document.querySelector("#validUserid").addEventListener("click", function () {
         const userid = document.querySelector("#userid").value.trim();
@@ -181,14 +184,20 @@
                 alert("아이디를 입력해주세요.");
                 return false;
             }
+            if (!idPattern.test(username)) {
+                alert("아이디는 최소 8자 이상이어야 합니다.");
+                return false;
+            }
+
+            if (!passwordPattern.test(password)) {
+                alert("비밀번호는 최소 8자 이상, 영문/숫자/특수문자를 포함해야 합니다.");
+                return false;
+            }
             if (password === "") {
                 alert("비밀번호를 입력해주세요.");
                 return false;
             }
-            if (password.length < 6) {
-                alert("비밀번호는 6자 이상이어야 합니다.");
-                return false;
-            }
+
             if (confirmPassword === "") {
                 alert("비밀번호 확인을 입력해주세요.");
                 return false;
@@ -238,7 +247,7 @@
                 email: document.getElementById('userEmail').value
             };
 
-            fetch('/member/register', {
+            fetch('api/member/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

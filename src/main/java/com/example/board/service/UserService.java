@@ -17,4 +17,6 @@ public interface UserService {
     int getTotalCount(String searchValue);
 
     List<UserDto> listWithPaging(PageDTO pageDTO);
+
+    UserDto getUserDetail(String userid);
 }

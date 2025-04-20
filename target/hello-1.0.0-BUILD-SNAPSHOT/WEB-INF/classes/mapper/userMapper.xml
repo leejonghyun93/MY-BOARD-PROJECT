@@ -67,4 +67,11 @@
         ORDER BY userid
         LIMIT #{startRow}, #{pageSize}
     </select>
+
+    <select id="getSelectUserDetail" resultType="com.example.board.dto.UserDto">
+        SELECT *
+            FROM t_member
+        where userid = #{userid}
+
+    </select>
 </mapper>

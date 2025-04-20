@@ -51,4 +51,9 @@ public class UserServiceImpl implements UserService  {
         return userDao.selectPagedMembers(startRow, pageSize, searchValue);
     }
 
+    @Override
+    public UserDto getUserDetail(String userid){
+        return userDao.getSelectUserDetail(userid);
+    }
+
 }

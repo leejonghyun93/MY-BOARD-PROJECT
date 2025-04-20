@@ -21,4 +21,6 @@ public interface UserDao {
                                      @Param("searchValue") String searchValue);
 
     int getTotalCount(@Param("searchValue") String searchValue);
+
+    UserDto getSelectUserDetail(String userid);
 }

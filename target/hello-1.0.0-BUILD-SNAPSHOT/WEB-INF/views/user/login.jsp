@@ -80,7 +80,7 @@
         formData.append('userid', userid);
         formData.append('passwd', passwd);
 
-        fetch("/login", {
+        fetch("api/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"

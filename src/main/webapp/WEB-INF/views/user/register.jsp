@@ -247,7 +247,7 @@
                 email: document.getElementById('userEmail').value
             };
 
-            fetch('/member/register', {
+            fetch('api/member/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

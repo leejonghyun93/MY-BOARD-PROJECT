@@ -54,4 +54,9 @@ public class UserDaoImpl implements UserDao {
     public int getTotalCount(@Param("searchValue") String searchValue){
         return sqlSession.selectOne(NAMESPACE + ".getTotalCount", searchValue);
     }
+
+    @Override
+    public UserDto getSelectUserDetail(String userid){
+        return sqlSession.selectOne(NAMESPACE + ".getSelectUserDetail", userid);
+    }
 }

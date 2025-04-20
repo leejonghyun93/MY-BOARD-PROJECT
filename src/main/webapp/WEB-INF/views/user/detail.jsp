@@ -6,42 +6,68 @@
 <c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
 <c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>회원 상세보기</title>
 
-    <!-- Bootstrap core CSS -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>회원 상세정보</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link href="dashboard.css" rel="stylesheet">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container-fluid {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .row {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+        }
+
+        main {
+            flex: 1;
+            background-color: #fff;
+            padding-bottom: 40px; /* 여유 공간 */
+        }
+
+        footer {
+            flex-shrink: 0;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            font-size: 16px; /* 글자 크기 약간 키움 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 테이블 그림자 */
         }
+
         th, td {
-            padding: 8px 12px;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
             text-align: left;
-            border: 1px solid #ddd;
         }
+
         th {
-            background-color: #f4f4f4;
+            background-color: #f9f9f9;
+            font-weight: 600;
+            color: #444;
+            width: 30%;
         }
-        .btn {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #45a049;
+
+        td {
+            background-color: #fff;
+            color: #222;
         }
     </style>
 </head>
@@ -53,76 +79,51 @@
     <div class="row">
         <%@ include file="/WEB-INF/views/layout/common/sidebar/sidebar.jsp" %>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="container mt-5" id="content-area">
-                <h2>회원 상세보기</h2>
-
-                <!-- 회원 정보 테이블 -->
-                <table>
-                    <tr>
-                        <th>아이디</th>
-                        <td>${member.userid}</td>
-                    </tr>
-                    <tr>
-                        <th>비밀번호</th>
-                        <td>${member.passwd}</td>
-                    </tr>
-                    <tr>
-                        <th>이름</th>
-                        <td>${member.name}</td>
-                    </tr>
-                    <tr>
-                        <th>나이</th>
-                        <td>${member.age}</td>
-                    </tr>
-                    <tr>
-                        <th>로그인 시간</th>
-                        <td>${member.loginTime}</td>
-                    </tr>
-                    <tr>
-                        <th>주소</th>
-                        <td>${member.address}</td>
-                    </tr>
-                    <tr>
-                        <th>상세 주소</th>
-                        <td>${member.detailAddress}</td>
-                    </tr>
-                    <tr>
-                        <th>전체 주소</th>
-                        <td>${member.fullAddress}</td>
-                    </tr>
-                    <tr>
-                        <th>전화번호</th>
-                        <td>${member.phone}</td>
-                    </tr>
-                    <tr>
-                        <th>이메일</th>
-                        <td>${member.email}</td>
-                    </tr>
-                    <tr>
-                        <th>등록일</th>
-                        <td>${member.regDate}</td>
-                    </tr>
-                    <tr>
-                        <th>수정일</th>
-                        <td>${member.updateDate}</td>
-                    </tr>
-                </table>
-
-                <!-- 수정 버튼 (수정 페이지로 이동) -->
-                <a href="editMember?id=${member.userid}">
-                    <button class="btn">회원 정보 수정</button>
-                </a>
-
-                <!-- 목록으로 돌아가기 버튼 -->
-                <a href="memberList">
-                    <button class="btn">회원 목록으로</button>
-                </a>
+                <div id="detailFragment">
+                    <h4>👤 회원 상세 정보</h4>
+                    <table class="table table-hover align-middle text-center" style="background-color: white;">
+                        <tr>
+                            <th>아이디</th>
+                            <td>${user.userid}</td>
+                        </tr>
+                        <tr>
+                            <th>이름</th>
+                            <td>${user.name}</td>
+                        </tr>
+                        <tr>
+                            <th>이메일</th>
+                            <td>${user.email}</td>
+                        </tr>
+                        <tr>
+                            <th>주소</th>
+                            <td>${user.fullAddress}</td>
+                        </tr>
+                        <tr>
+                            <th>로그인 시간</th>
+                            <td>${user.loginTime}</td>
+                        </tr>
+                        <tr>
+                            <th>나이</th>
+                            <td>${user.age}</td>
+                        </tr>
+                        <tr>
+                            <th>전화번호</th>
+                            <td>${user.phone}</td>
+                        </tr>
+                        <tr>
+                            <th>이메일</th>
+                            <td>${user.email}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
 </div>
 
 <%@ include file="/WEB-INF/views/layout/common/footer/footer.jsp" %>
+
 </body>
 </html>
