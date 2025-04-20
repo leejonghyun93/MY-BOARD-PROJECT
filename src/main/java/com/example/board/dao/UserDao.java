@@ -23,4 +23,9 @@ public interface UserDao {
     int getTotalCount(@Param("searchValue") String searchValue);
 
     UserDto getSelectUserDetail(String userid);
+
+    void increaseLoginFailCount(String userid);
+    void resetLoginFailCount(String userid);
+    void lockAccount(String userid);
+    void unlockAccount(String userid); // 관리자 전용
 }

@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.board.dao.UserDao">
-
-    <select id="getMember"  resultType="com.example.board.dto.UserDto">
+    <resultMap id="userResultMap" type="com.example.board.dto.UserDto">
+        <result property="userid" column="userid"/>
+        <result property="passwd" column="passwd"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="loginTime" column="loginTime"/>
+        <result property="address" column="address"/>
+        <result property="detailAddress" column="detailAddress"/>
+        <result property="fullAddress" column="fulladdress"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="regDate" column="regDate"/>
+        <result property="updateDate" column="updateDate"/>
+        <result property="loginFailCount" column="login_fail_count"/>
+        <result property="accountLocked" column="account_locked"/>
+    </resultMap>
+    <select id="getMember" resultMap="userResultMap">
         SELECT *
         FROM t_member
         WHERE userid = #{userid}
@@ -74,4 +89,29 @@
         where userid = #{userid}
 
     </select>
+
+    <update id="increaseLoginFailCount">
+        UPDATE t_member
+        SET login_fail_count = login_fail_count + 1
+        WHERE userid = #{userid}
+    </update>
+
+    <update id="resetLoginFailCount">
+        UPDATE t_member
+        SET login_fail_count = 0
+        WHERE userid = #{userid}
+    </update>
+
+    <update id="lockAccount">
+        UPDATE t_member
+        SET account_locked = 1
+        WHERE userid = #{userid}
+    </update>
+
+    <update id="unlockAccount">
+        UPDATE t_member
+        SET login_fail_count = 0,
+            account_locked = 0
+        WHERE userid = #{userid}
+    </update>
 </mapper>

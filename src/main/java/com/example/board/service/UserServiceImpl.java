@@ -56,4 +56,34 @@ public class UserServiceImpl implements UserService  {
         return userDao.getSelectUserDetail(userid);
     }
 
+    // 로그인 시간 설정 메서드
+    @Override
+    public void setLoginTime(String userid) {
+        userDao.setLoginTime(userid);
+    }
+
+    // 로그인 실패 횟수 증가 메서드
+    @Override
+    public void increaseLoginFailCount(String userid) {
+        userDao.increaseLoginFailCount(userid);
+    }
+
+    // 로그인 실패 횟수 초기화 메서드
+    @Override
+    public void resetLoginFailCount(String userid) {
+        userDao.resetLoginFailCount(userid);
+    }
+
+    // 계정 잠금 메서드
+    @Override
+    public void lockAccount(String userid) {
+        userDao.lockAccount(userid);
+    }
+
+    // 계정 잠금 해제 메서드
+    @Override
+    public void unlockAccount(String userid) {
+        userDao.unlockAccount(userid);
+    }
+
 }

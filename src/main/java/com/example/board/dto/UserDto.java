@@ -29,6 +29,17 @@ public class UserDto {
     private String regDate;
     private String updateDate;
 
+    // 로그인 실패 횟수 추가
+    private int loginFailCount;
+
+    // 계정 잠금 여부 추가
+    private int  accountLocked;
+
+    public boolean isAccountLocked() {
+        return accountLocked == 1;
+    }
+
+
     public boolean isValid() {
         return userid != null && !userid.trim().isEmpty();
     }

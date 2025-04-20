@@ -19,4 +19,10 @@ public interface UserService {
     List<UserDto> listWithPaging(PageDTO pageDTO);
 
     UserDto getUserDetail(String userid);
+
+    void setLoginTime(String userid);
+    void increaseLoginFailCount(String userid);
+    void resetLoginFailCount(String userid);
+    void lockAccount(String userid);
+    void unlockAccount(String userid);
 }

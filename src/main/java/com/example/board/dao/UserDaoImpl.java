@@ -59,4 +59,24 @@ public class UserDaoImpl implements UserDao {
     public UserDto getSelectUserDetail(String userid){
         return sqlSession.selectOne(NAMESPACE + ".getSelectUserDetail", userid);
     }
+
+    @Override
+    public void increaseLoginFailCount(String userid) {
+        sqlSession.update(NAMESPACE + ".increaseLoginFailCount", userid);
+    }
+
+    @Override
+    public void resetLoginFailCount(String userid) {
+        sqlSession.update(NAMESPACE + ".resetLoginFailCount", userid);
+    }
+
+    @Override
+    public void lockAccount(String userid) {
+        sqlSession.update(NAMESPACE + ".lockAccount", userid);
+    }
+
+    @Override
+    public void unlockAccount(String userid) {
+        sqlSession.update(NAMESPACE + ".unlockAccount", userid);
+    }
 }

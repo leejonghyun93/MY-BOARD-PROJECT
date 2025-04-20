@@ -99,33 +99,65 @@ public class UserApiController {
         result.put("available", isAvailable);
         return result;
     }
-
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> login(@RequestParam String userid, @RequestParam String passwd, HttpSession session, HttpServletResponse response) {
+    public ResponseEntity<Map<String, Object>> login(@RequestParam String userid, @RequestParam String passwd, HttpSession session) {
 
         Map<String, Object> result = new HashMap<>();
+        UserDto user = userService.getMember(userid);
 
-        if (userid == null || userid.isEmpty() || passwd == null || passwd.isEmpty()) {
-            result.put("error", "아이디와 비밀번호는 필수입니다.");
-            return ResponseEntity.badRequest().body(result);
+        if (user == null) {
+            result.put("error", "존재하지 않는 아이디입니다.");
+            return ResponseEntity.status(401).body(result);
         }
 
-        UserDto loggedInMember = userService.login(userid, passwd);
-
-        if (loggedInMember == null) {
-            result.put("error", "아이디 또는 비밀번호가 잘못되었습니다.");
-            return ResponseEntity.status(401).body(result); // Unauthorized 상태
+        // 계정 잠금 상태 확인
+        if (user.isAccountLocked()) {
+            result.put("error", "계정이 잠금 상태입니다. 관리자에게 문의하세요.");
+            return ResponseEntity.status(403).body(result);
         }
 
-        // 로그인 성공 시, 세션에 member 저장
-        session.setAttribute("userid", loggedInMember.getUserid());
-        session.setAttribute("name", loggedInMember.getName());
+        // 비밀번호 틀림
+        if (!user.getPasswd().equals(passwd)) {
+            userService.increaseLoginFailCount(userid);
 
-        result.put("redirectUrl", "/"); // 리다이렉트할 URL
+            // 🔄 DB에서 최신 로그인 실패 횟수 다시 조회
+            UserDto updatedUser = userService.getMember(userid);
+            int failCount = updatedUser.getLoginFailCount();
 
+            if (failCount >= 5) {
+                userService.lockAccount(userid);
+                result.put("error", "비밀번호 5회 오류로 계정이 잠겼습니다.");
+            } else {
+                result.put("error", "비밀번호가 틀렸습니다. (" + failCount + "회 실패)");
+            }
+
+            return ResponseEntity.status(401).body(result);
+        }
+
+        // 로그인 성공
+        userService.resetLoginFailCount(userid);
+        userService.setLoginTime(userid);
+
+        session.setAttribute("userid", user.getUserid());
+        session.setAttribute("name", user.getName());
+
+        result.put("redirectUrl", "/");
         return ResponseEntity.ok(result);
+
+
+//        // 로그인 성공 처리
+//        userService.resetLoginFailCount(userid);  // 로그인 실패 횟수 초기화
+//        userService.setLoginTime(userid);  // 로그인 시간 갱신
+//
+//        // 세션에 사용자 정보 저장
+//        session.setAttribute("userid", user.getUserid());
+//        session.setAttribute("name", user.getName());
+//
+//        result.put("redirectUrl", "/");  // 로그인 후 리다이렉트할 URL
+//        return ResponseEntity.ok(result);  // OK 상태 반환
     }
+
 
     /** 로그아웃 **/
     @PostMapping("/logout")
