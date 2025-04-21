@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.dao.BoardDao">
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM t_board
+        <where>
+            <if test="searchValue != null and searchValue != ''">
+                title LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 페이징된 회원 목록 -->
+    <select id="selectPagedBoards" resultType="com.example.board.dto.BoardDto">
+        SELECT *
+        FROM t_board
+        <where>
+            <if test="searchValue != null and searchValue != ''">
+                title LIKE CONCAT('%', #{searchValue}, '%')
+            </if>
+        </where>
+        ORDER BY bno
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="getSelectBoardDetail" resultType="com.example.board.dto.BoardDto">
+        SELECT *
+        FROM t_board
+        where bno = #{bno}
+
+    </select>
+
+    <update id="updateViewCount" parameterType="int">
+        UPDATE t_board
+        SET viewCount = viewCount + 1
+        WHERE bno = #{bno}
+    </update>
+
+    <update id="updateBoard" parameterType="com.example.board.dto.BoardDto">
+        UPDATE t_board
+        SET title = #{title},
+            content = #{content}
+        WHERE bno = #{bno}
+          AND passwd = #{passwd}
+    </update>
+
+
+    <delete id="deleteBoard" parameterType="com.example.board.dto.BoardDto">
+        DELETE FROM t_board
+        WHERE bno = #{bno}
+          AND passwd = #{passwd}
+    </delete>
+<!--    <update id="updateUser" parameterType="com.example.board.dto.BoardDto">-->
+<!--        UPDATE t_board-->
+<!--        SET-->
+<!--            userid = #{userid},-->
+<!--            passwd = #{passwd},-->
+<!--            name = #{name},-->
+<!--            age = #{age},-->
+<!--            address = #{address},-->
+<!--            detailAddress = #{detailAddress},-->
+<!--            fullAddress = #{fullAddress},-->
+<!--            phone = #{phone},-->
+<!--            email = #{email},-->
+<!--            updateDate = NOW(),-->
+<!--            role = #{role}-->
+<!--        WHERE userid = #{userid}-->
+<!--    </update>-->
+</mapper>

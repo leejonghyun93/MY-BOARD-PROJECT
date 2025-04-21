@@ -6,7 +6,6 @@
     <typeAliases>
         <typeAlias alias="BoardDto" type="com.example.board.dto.BoardDto"/>
         <typeAlias alias="userDto" type="com.example.board.dto.UserDto"/>
-<!--        <typeAlias alias="SearchCondition" type="com."/>-->
     </typeAliases>
 
 </configuration>

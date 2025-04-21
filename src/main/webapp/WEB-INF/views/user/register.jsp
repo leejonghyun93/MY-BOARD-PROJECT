@@ -138,7 +138,6 @@
     const idPattern = /^.{8,}$/; // 아이디는 8자 이상
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/; // 비밀번호는 영문, 숫자, 특수문자 포함 8자 이상
 
-
     document.querySelector("#validUserid").addEventListener("click", function () {
         const userid = document.querySelector("#userid").value.trim();
         console.log("입력한 아이디:", userid);
@@ -147,7 +146,7 @@
             return;
         }
 
-        fetch('/member/checkUserid?userid=' + userid)
+        fetch('/api/member/checkUserid?userid=' + userid)
             .then(res => res.json())
             .then(data => {
                 if (data.available === true) {
@@ -163,8 +162,10 @@
                 alert("중복 확인 중 오류가 발생했습니다.");
             });
     });
+
     document.addEventListener('DOMContentLoaded', function () {
-        function showAlert() {
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // 기본 제출 막기
             combineAddress();
 
             const username = document.getElementById('userid').value.trim();
@@ -176,6 +177,7 @@
             const detailAddress = document.getElementById('detailAddress').value.trim();
             const age = document.getElementById('age').value.trim();
 
+            // 유효성 검사
             if (age === "" || isNaN(age) || parseInt(age) <= 0) {
                 alert("나이를 올바르게 입력해주세요.");
                 return false;
@@ -227,14 +229,7 @@
                 return false;
             }
 
-            alert("회원가입이 성공적으로 완료되었습니다.");
-            return true;
-        }
-
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // 기본 제출 막기
-            combineAddress();
-
+            // 서버로 데이터 전송
             const userData = {
                 userid: document.getElementById('userid').value,
                 passwd: document.getElementById('userPwd').value,
@@ -247,7 +242,7 @@
                 email: document.getElementById('userEmail').value
             };
 
-            fetch('api/member/register', {
+            fetch('/api/member/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -268,7 +263,6 @@
                     console.error(err);
                 });
         });
-
     });
 
     function execDaumPostcode() {
