@@ -118,6 +118,7 @@
                         </tr>
                     </table>
                 </div>
+                <button type="button">수정</button>
             </div>
         </main>
     </div>

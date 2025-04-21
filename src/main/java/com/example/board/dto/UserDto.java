@@ -28,6 +28,7 @@ public class UserDto {
     private String email;
     private String regDate;
     private String updateDate;
+    private String role;
 
     // 로그인 실패 횟수 추가
     private int loginFailCount;

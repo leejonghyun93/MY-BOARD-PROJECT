@@ -141,6 +141,7 @@ public class UserApiController {
 
         session.setAttribute("userid", user.getUserid());
         session.setAttribute("name", user.getName());
+        session.setAttribute("userRole", user.getRole());
 
         result.put("redirectUrl", "/");
         return ResponseEntity.ok(result);
@@ -175,4 +176,21 @@ public class UserApiController {
         UserDto user = userService.getUserDetail(userid);
         return ResponseEntity.ok(user);
     }
+    @PostMapping(value = "/unlockAccount", produces = "text/plain; charset=UTF-8")
+    @ResponseBody
+    public String unlockAccount(@RequestParam("userid") String userid, HttpSession session) {
+        String userRole = (String) session.getAttribute("userRole");
+
+        if (!"ADMIN".equals(userRole)) {
+            return "권한이 없습니다. 관리자만 사용 가능합니다.";
+        }
+
+        try {
+            userService.unlockAccount(userid);
+            return "계정 잠금이 성공적으로 해제되었습니다.";
+        } catch (Exception e) {
+            return "계정 잠금 해제 중 오류가 발생했습니다.";
+        }
+    }
+
 }

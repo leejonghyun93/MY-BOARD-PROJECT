@@ -30,8 +30,12 @@ public class UserController {
 
     /** 로그인 **/
     @GetMapping("/login")
-    public String loginForm() {
-        return "user/login";
+    public String loginForm(HttpSession session) {
+        if (session.getAttribute("userid") != null) {
+            // 이미 로그인된 상태 → 홈이나 원하는 페이지로 리다이렉트
+            return "redirect:/";
+        }
+        return "user/login"; // 로그인 JSP 페이지로 이동
     }
 
     /**회원 목록 **/
@@ -60,6 +64,7 @@ public class UserController {
 
         // userid가 없으면 로그인 페이지로 리다이렉트
         if (userid == null) {
+            model.addAttribute("message","로그인 후 이용 가능합니다.");
             return "redirect:/login";
         }
 

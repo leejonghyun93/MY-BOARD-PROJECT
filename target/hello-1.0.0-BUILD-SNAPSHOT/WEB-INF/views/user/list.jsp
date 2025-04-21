@@ -80,16 +80,21 @@
                 </form>
 
                 <!-- 검색어 입력 -->
-                <div>
-                    <form method="post" action="/memberList">
-                        <label for="searchValue">검색어:</label>
-                        <input type="text" name="searchValue" id="searchValue" value="${fn:escapeXml(pageDTO.searchValue)}"/>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <!-- 검색어 입력 -->
+                    <form method="post" action="/memberList" style="display: flex; align-items: center;">
+                        <label for="searchValue" style="margin-right: 8px;">검색어:</label>
+                        <input type="text" name="searchValue" id="searchValue" value="${fn:escapeXml(pageDTO.searchValue)}" style="margin-right: 8px;"/>
                         <input type="hidden" name="page" value="1"/>
                         <input type="hidden" name="size" value="${pageDTO.pageSize}"/>
                         <input type="submit" value="검색">
                     </form>
-                </div>
 
+                    <!-- 로그인 잠금 해제 버튼 -->
+                    <form method="post" action="/api/loginCheckOut">
+                        <button id="loginCheckOutBtn">로그인 잠금 해제</button>
+                    </form>
+                </div>
                 <!-- 회원 테이블 -->
                 <div class="table-responsive">
                     <table class="table table-hover align-middle text-center" style="background-color: white;">
@@ -148,6 +153,33 @@
 <%@ include file="/WEB-INF/views/layout/common/footer/footer.jsp" %>
 
 <script>
+    document.getElementById("loginCheckOutBtn").addEventListener("click", function (e) {
+        e.preventDefault(); // form 기본 제출 막기
+
+        const userid = prompt("잠금 해제할 사용자 ID를 입력하세요:");
+        if (!userid) return;
+
+        fetch('/api/unlockAccount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'userid=' + encodeURIComponent(userid)
+        })
+            .then(response => response.text())
+            .then(result => {
+                alert(result);
+
+                // 성공 메시지일 경우에만 이동
+                if (result.includes("성공")) {
+                    window.location.href = "/";
+                }
+            })
+            .catch(error => {
+                alert('계정 잠금 해제 중 오류가 발생했습니다.');
+                console.error('Error:', error);
+            });
+    });
     function loadUserDetail(userid) {
         fetch('/detail', {
             method: 'POST',
