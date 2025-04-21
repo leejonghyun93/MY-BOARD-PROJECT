@@ -181,7 +181,7 @@
             });
     });
     function loadUserDetail(userid) {
-        fetch('/detail', {
+        fetch(`/detail/`+ encodeURIComponent(userid), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

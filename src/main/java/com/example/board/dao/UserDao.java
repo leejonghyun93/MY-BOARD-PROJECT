@@ -28,4 +28,6 @@ public interface UserDao {
     void resetLoginFailCount(String userid);
     void lockAccount(String userid);
     void unlockAccount(String userid); // 관리자 전용
+
+    int update(UserDto userDto);
 }

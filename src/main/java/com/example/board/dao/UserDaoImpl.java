@@ -79,4 +79,10 @@ public class UserDaoImpl implements UserDao {
     public void unlockAccount(String userid) {
         sqlSession.update(NAMESPACE + ".unlockAccount", userid);
     }
+
+    @Override
+    public int update(UserDto userDto)  {
+        return sqlSession.update(NAMESPACE + ".updateUser", userDto);
+    }
+
 }

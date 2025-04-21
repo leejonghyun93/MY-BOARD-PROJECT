@@ -25,4 +25,7 @@ public interface UserService {
     void resetLoginFailCount(String userid);
     void lockAccount(String userid);
     void unlockAccount(String userid);
+
+    // 수정화면
+    int updateUser(UserDto userDto);
 }

@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BoardDto {
 
-    private int bno;
+    private Integer bno;
     private String title;
     private String content;
     private String writer;
     private String passwd;
-    private LocalDateTime regDate;
+    private String regDate;
     private int viewCount;
 }

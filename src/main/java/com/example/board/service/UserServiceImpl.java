@@ -86,4 +86,10 @@ public class UserServiceImpl implements UserService  {
         userDao.unlockAccount(userid);
     }
 
+    // 수정화면
+    @Override
+    public int updateUser(UserDto userDto){
+        return userDao.update(userDto);
+    }
+
 }

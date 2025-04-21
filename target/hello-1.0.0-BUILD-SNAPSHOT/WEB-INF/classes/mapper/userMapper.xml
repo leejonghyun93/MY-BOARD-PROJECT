@@ -114,4 +114,21 @@
             account_locked = 0
         WHERE userid = #{userid}
     </update>
+
+    <update id="updateUser" parameterType="com.example.board.dto.UserDto">
+        UPDATE t_member
+        SET
+            userid = #{userid},
+            passwd = #{passwd},
+            name = #{name},
+            age = #{age},
+            address = #{address},
+            detailAddress = #{detailAddress},
+            fullAddress = #{fullAddress},
+            phone = #{phone},
+            email = #{email},
+            updateDate = NOW(),
+            role = #{role}
+        WHERE userid = #{userid}
+    </update>
 </mapper>

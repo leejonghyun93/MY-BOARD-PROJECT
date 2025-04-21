@@ -5,8 +5,10 @@ import com.example.board.dto.UserDto;
 import com.example.board.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
@@ -142,23 +144,14 @@ public class UserApiController {
         session.setAttribute("userid", user.getUserid());
         session.setAttribute("name", user.getName());
         session.setAttribute("userRole", user.getRole());
+        System.out.println("세션에 저장된 role: " + session.getAttribute("userRole"));
 
+        // request에 userRole 값을 추가
+//        request.setAttribute("userRole", user.getRole());
         result.put("redirectUrl", "/");
         return ResponseEntity.ok(result);
 
-
-//        // 로그인 성공 처리
-//        userService.resetLoginFailCount(userid);  // 로그인 실패 횟수 초기화
-//        userService.setLoginTime(userid);  // 로그인 시간 갱신
-//
-//        // 세션에 사용자 정보 저장
-//        session.setAttribute("userid", user.getUserid());
-//        session.setAttribute("name", user.getName());
-//
-//        result.put("redirectUrl", "/");  // 로그인 후 리다이렉트할 URL
-//        return ResponseEntity.ok(result);  // OK 상태 반환
     }
-
 
     /** 로그아웃 **/
     @PostMapping("/logout")
@@ -171,11 +164,11 @@ public class UserApiController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{userid}")
-    public ResponseEntity<UserDto> getUserInfo(@PathVariable String userid) {
-        UserDto user = userService.getUserDetail(userid);
-        return ResponseEntity.ok(user);
-    }
+//    @GetMapping("/user/{userid}")
+//    public ResponseEntity<UserDto> getUserInfo(@PathVariable String userid) {
+//        UserDto user = userService.getUserDetail(userid);
+//        return ResponseEntity.ok(user);
+//    }
     @PostMapping(value = "/unlockAccount", produces = "text/plain; charset=UTF-8")
     @ResponseBody
     public String unlockAccount(@RequestParam("userid") String userid, HttpSession session) {
@@ -193,4 +186,18 @@ public class UserApiController {
         }
     }
 
+    @PostMapping("/user/update")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateUser(@RequestBody UserDto userDto) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 유효성 검사 및 데이터 업데이트
+        userService.updateUser(userDto);
+
+        response.put("success", true);
+        response.put("message", "수정되었습니다.");
+        response.put("redirectUrl", "/memberList");
+
+        return ResponseEntity.ok(response);
+    }
 }

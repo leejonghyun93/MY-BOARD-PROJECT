@@ -44,25 +44,28 @@
         footer {
             flex-shrink: 0;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            font-size: 16px; /* 글자 크기 약간 키움 */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 테이블 그림자 */
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ccc;
         }
 
         th, td {
-            padding: 10px 12px;
             border: 1px solid #ccc;
+            padding: 14px 18px;
             text-align: left;
+            vertical-align: middle;
         }
 
         th {
-            background-color: #f9f9f9;
+            background-color: #f1f3f5; /* 밝은 회색 */
             font-weight: 600;
-            color: #444;
-            width: 30%;
+            color: #333;
+            width: 20%;
         }
 
         td {
@@ -117,14 +120,45 @@
                             <td>${user.email}</td>
                         </tr>
                     </table>
+                    <form method="get" action="/user/editForm">
+                        <input type="submit" value="수정" class="btn btn-primary"/>
+                    </form>
                 </div>
-                <button type="button">수정</button>
             </div>
         </main>
     </div>
 </div>
 
 <%@ include file="/WEB-INF/views/layout/common/footer/footer.jsp" %>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButton = document.getElementById("editButton");
 
+        if (editButton) {
+            editButton.addEventListener("click", function () {
+                fetch("/user/editForm")
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("HTTP error " + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        const contentArea = document.getElementById("content-area");
+                        if (contentArea) {
+                            contentArea.innerHTML = data;
+                        } else {
+                            console.warn("content-area 요소를 찾을 수 없음");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("수정 폼을 불러오는 중 오류 발생:", error);
+                    });
+            });
+        } else {
+            console.warn("editButton 요소를 찾을 수 없습니다.");
+        }
+    });
+</script>
 </body>
 </html>
