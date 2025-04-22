@@ -11,7 +11,6 @@
         </where>
     </select>
 
-    <!-- 페이징된 회원 목록 -->
     <select id="selectPagedBoards" resultType="com.example.board.dto.BoardDto">
         SELECT *
         FROM t_board
@@ -20,7 +19,6 @@
                 title LIKE CONCAT('%', #{searchValue}, '%')
             </if>
         </where>
-        WHERE is_private = "Y"
         ORDER BY bno
         LIMIT #{startRow}, #{pageSize}
 
@@ -85,5 +83,11 @@
                      #{viewCount}
                  )
     </insert>
-
+    <update id="updateBoardVisibility" parameterType="java.util.List">
+        <foreach collection="list" item="boardId" open="" close="" separator=",">
+            UPDATE t_board
+            SET is_private = CASE WHEN is_private = 'Y' THEN 'N' ELSE 'Y' END
+            WHERE bno = #{bno}
+        </foreach>
+    </update>
 </mapper>

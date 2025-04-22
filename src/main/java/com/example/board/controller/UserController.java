@@ -49,7 +49,15 @@ public class UserController {
     public String list(@RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
                        @RequestParam(required = false) String searchValue,
-                       Model model) {
+                       HttpSession session, Model model) {
+
+        // 세션에서 userRole을 가져옵니다.
+        String userRole = (String) session.getAttribute("userRole");
+
+        // userRole이 null이거나 ADMIN이 아니면 접근을 거부
+        if (userRole == null || !userRole.equals("ADMIN")) {
+            return "redirect:/accessDenied"; // 접근 거부 페이지로 리다이렉트
+        }
 
         int totalCount = userService.getTotalCount(searchValue);
         PageDTO<UserDto> pageDTO = new PageDTO<>(page, totalCount, size, searchValue, null);
@@ -61,6 +69,10 @@ public class UserController {
         model.addAttribute("searchValue", searchValue);
 
         return "user/list"; // JSP 위치: /WEB-INF/views/user/list.jsp
+    }
+    @RequestMapping("/accessDenied")
+    public String accessDenied() {
+        return "accessDenied"; // 접근 거부 페이지
     }
     @GetMapping("/detail/{userid}")
     public String userDetail(@PathVariable String userid, HttpSession session, Model model) {

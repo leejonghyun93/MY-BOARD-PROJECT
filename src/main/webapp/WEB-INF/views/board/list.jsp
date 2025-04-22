@@ -3,8 +3,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page session="false" %>
 
-<c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
-<c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
+<c:set var="loginId" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userid') != null ? pageContext.request.session.getAttribute('userid') : ''}"/>
+<c:set var="loginName" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
+<c:set var="userRole" value="${pageContext.request.getSession(false) != null ? pageContext.request.session.getAttribute('userRole') : ''}" />
+
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
 <c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
 
@@ -17,38 +19,14 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
-        table.table {
-            table-layout: fixed;
-            width: 100%;
-        }
-
-        .col-check {
-            width: 30px;
-        }
-
-        .col-num {
-            width: 60px;
-        }
-
-        .col-id {
-            width: 80px;
-        }
-
-        .col-name {
-            width: 60px;
-        }
-
-        .col-email {
-            width: 150px;
-        }
-
-        .col-address {
-            width: 200px;
-        }
-
-        .col-login-time {
-            width: 120px;
-        }
+        table.table { table-layout: fixed; width: 100%; }
+        .col-check { width: 30px; }
+        .col-num { width: 50px; }
+        .col-title { width: 150px; }
+        .col-writer { width: 80px; }
+        .col-date { width: 100px; }
+        .col-view { width: 50px; }
+        .col-private { width: 50px; }
     </style>
 </head>
 <body>
@@ -65,6 +43,9 @@
                 <div style="display: flex; justify-content: space-between; align-items: center;" class="mb-4">
                     <h2>게시판 목록</h2>
                     <a href="/board/write" class="btn btn-primary">글쓰기</a>
+                    <c:if test="${userRole eq 'ADMIN'}">
+                        <button id="toggleVisibility" class="btn btn-info" onclick="toggleVisibility()">공개여부 전환</button>
+                    </c:if>
                 </div>
 
                 <!-- 페이지 사이즈 선택 -->
@@ -84,65 +65,61 @@
 
                 <!-- 검색어 입력 -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <!-- 검색어 입력 -->
                     <form method="post" action="/boardList" style="display: flex; align-items: center;">
                         <label for="searchValue" style="margin-right: 8px;">검색어:</label>
-                        <input type="text" name="searchValue" id="searchValue" value="${fn:escapeXml(pageDTO.searchValue)}" style="margin-right: 8px;"/>
+                        <input type="text" name="searchValue" id="searchValue"
+                               value="${fn:escapeXml(pageDTO.searchValue)}" style="margin-right: 8px;"/>
                         <input type="hidden" name="page" value="1"/>
                         <input type="hidden" name="size" value="${pageDTO.pageSize}"/>
                         <input type="submit" value="검색">
                     </form>
-
                 </div>
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle text-center" style="background-color: white;">
                         <colgroup>
-                            <col class="col-check">
+                            <c:if test="${userRole eq 'ADMIN'}">
+                                <col class="col-check">
+                            </c:if>
                             <col class="col-num">
                             <col class="col-title">
                             <col class="col-writer">
                             <col class="col-date">
                             <col class="col-view">
-
+                            <col class="col-private">
                         </colgroup>
                         <thead style="background-color: #f2f2f2;">
                         <tr>
-                            <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"></th>
+                            <c:if test="${userRole eq 'ADMIN'}">
+                                <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"></th>
+                            </c:if>
                             <th onclick="sortTable(1)">번호 ▲▼</th>
                             <th onclick="sortTable(2)">제목 ▲▼</th>
                             <th onclick="sortTable(3)">작성자 ▲▼</th>
                             <th onclick="sortTable(4)">작성일 ▲▼</th>
                             <th onclick="sortTable(5)">조회수 ▲▼</th>
-
+                            <th onclick="sortTable(6)">공개여부 ▲▼</th>
                         </tr>
                         </thead>
                         <tbody>
                         <c:choose>
                             <c:when test="${empty boardList}">
                                 <tr>
-                                    <td colspan="6">게시글이 존재하지 않습니다.</td>
+                                    <td colspan="7">게시글이 존재하지 않습니다.</td>
                                 </tr>
                             </c:when>
                             <c:otherwise>
                                 <c:forEach var="board" items="${boardList}" varStatus="status">
                                     <tr>
-                                        <td><input type="checkbox" name="boardCheck" value="${board.bno}"></td>
+                                        <c:if test="${userRole eq 'ADMIN'}">
+                                            <td><input type="checkbox" name="boardCheck" value="${board.bno}"></td>
+                                        </c:if>
                                         <td>${(pageDTO.page - 1) * pageDTO.pageSize + status.index + 1}</td>
                                         <td><a href="javascript:void(0);" onclick="loadBoardDetail(${board.bno})">${board.title}</a></td>
                                         <td>${board.writer != null ? board.writer : board.nickName}</td>
-                                        <td>${board.regDate}</td>
+                                        <td>${board.getFormattedRegDate()}</td>
                                         <td>${board.viewCount}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${board.isPrivate}">
-                                                    Y
-                                                </c:when>
-                                                <c:otherwise>
-                                                    N
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
+                                        <td>${board.isPrivate}</td>
                                     </tr>
                                 </c:forEach>
                             </c:otherwise>
@@ -161,9 +138,41 @@
 <%@ include file="/WEB-INF/views/layout/common/footer/footer.jsp" %>
 
 <script>
+    function toggleVisibility() {
+        // 선택된 게시글이 있는지 확인
+        const selectedBoards = document.querySelectorAll('input[name="boardCheck"]:checked');
+        if (selectedBoards.length === 0) {
+            alert('변경할 게시글을 선택해주세요.');
+            return;
+        }
 
+        // 선택된 게시글 ID 배열 생성
+        const boardIds = Array.from(selectedBoards).map(input => input.value);
+
+        // 공개여부 전환 요청
+        fetch('/api/board/toggleVisibility', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ boardIds: boardIds })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('공개 여부가 성공적으로 변경되었습니다.');
+                    location.reload();  // 페이지 새로 고침
+                } else {
+                    alert('공개 여부 변경에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                alert('공개 여부 변경 중 오류가 발생했습니다.');
+                console.error('Error:', error);
+            });
+    }
     function loadBoardDetail(bno) {
-        fetch(`/board/detail/`+ bno, {
+        fetch(`/board/detail/` + bno, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -180,19 +189,20 @@
                 }
             })
             .catch(error => {
-                alert('사용자 정보를 불러오는 데 실패했습니다.');
+                alert('게시글 정보를 불러오는 데 실패했습니다.');
                 console.error('Error:', error);
             });
     }
 
     function toggleAll(source) {
-        const checkboxes = document.getElementsByName('userCheck');
+        const checkboxes = document.getElementsByName('boardCheck');
         for (let i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = source.checked;
         }
     }
 
     let sortDirection = {};
+
     function sortTable(columnIndex) {
         const table = document.querySelector("table");
         const tbody = table.querySelector("tbody");

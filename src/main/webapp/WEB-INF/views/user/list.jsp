@@ -134,7 +134,7 @@
                                         <td><a href="javascript:void(0);" onclick="loadUserDetail('${user.userid}')">${user.name}</a></td>
                                         <td>${user.email}</td>
                                         <td>${user.fullAddress}</td>
-                                        <td>${user.loginTime}</td>
+                                        <td>${user.formatLocalDateTime(user.loginTime)}</td>
                                     </tr>
                                 </c:forEach>
                             </c:otherwise>

@@ -48,8 +48,8 @@ public class UserApiController {
         }
 
         // 로그인 시간 기본값 설정
-        if (userDto.getLoginTime() == null || userDto.getLoginTime().isEmpty()) {
-            userDto.setLoginTime(LocalDateTime.now().toString());
+        if (userDto.getLoginTime() == null) {
+            userDto.setLoginTime(LocalDateTime.now());
         }
 
         // 회원가입 진행

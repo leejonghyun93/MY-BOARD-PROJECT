@@ -73,5 +73,9 @@ public class BoardDaoImpl implements BoardDao {
     public void insert(BoardDto boardDto)  {
         sqlSession.insert(NAMESPACE + ".insert", boardDto);
     }
-
+    @Override
+    public boolean updateBoardVisibility(List<Long> boardIds) {
+        int updatedCount = sqlSession.update(NAMESPACE + ".updateBoardVisibility", boardIds);
+        return updatedCount > 0;
+    }
 }

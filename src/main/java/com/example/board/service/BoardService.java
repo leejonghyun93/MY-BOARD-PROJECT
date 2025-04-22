@@ -21,4 +21,6 @@ public interface BoardService {
     boolean checkPassword(Integer bno, String passwd);
 
     void insert(BoardDto boardDto);
+
+    boolean toggleVisibility(List<Long> boardIds);
 }

@@ -22,12 +22,18 @@ public class BoardController {
     private BoardService boardService;
 
 
-    /**회원 목록 **/
+
     @RequestMapping("/boardList")
     public String list(@RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
                        @RequestParam(required = false) String searchValue,
+                       HttpSession session, // 여기서 @RequestParam 제거!
                        Model model) {
+
+        UserDto userDto = (UserDto) session.getAttribute("loginUser");
+        if (userDto != null) {
+            session.setAttribute("userRole", userDto.getRole());
+        }
 
         int totalCount = boardService.getTotalCount(searchValue);
         PageDTO<BoardDto> pageDTO = new PageDTO<>(page, totalCount, size, searchValue, null);

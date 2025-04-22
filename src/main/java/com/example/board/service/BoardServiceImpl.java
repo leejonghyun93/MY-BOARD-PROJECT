@@ -75,5 +75,13 @@ public class BoardServiceImpl implements BoardService {
     public void insert(BoardDto boardDto) {
         boardDao.insert(boardDto);
     }
-
+    @Override
+    public boolean toggleVisibility(List<Long> boardIds) {
+        try {
+            return boardDao.updateBoardVisibility(boardIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

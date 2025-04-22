@@ -106,7 +106,19 @@ public class BoardApiController {
 
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/board/toggleVisibility")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> toggleVisibility(@RequestBody Map<String, List<Long>> request) {
+        List<Long> boardIds = request.get("boardIds");  // JSON에서 "boardIds" 값을 가져옴
 
+        // 공개여부 전환 로직
+        boolean success = boardService.toggleVisibility(boardIds);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", success);
+
+        return ResponseEntity.ok(response);
+    }
 //    @DeleteMapping("/board/delete/{bno}")
 //    public ResponseEntity deleteBoard(
 //            @PathVariable("bno") Integer bno,

@@ -29,4 +29,6 @@ public interface BoardDao {
     boolean checkPassword(Integer bno, String passwd);
 
     void insert(BoardDto boardDto);
+
+    boolean updateBoardVisibility(List<Long> boardIds);
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -20,14 +21,17 @@ public class UserDto {
     private String passwd;
     private String name;
     private int age;
-    private String loginTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime loginTime;
     private String address;
     private String detailAddress;
     private String fullAddress;
     private String phone;
     private String email;
-    private String regDate;
-    private String updateDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime regDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateDate;
     private String role;
 
     // 로그인 실패 횟수 추가
@@ -50,6 +54,26 @@ public class UserDto {
 
         return memberList.stream()
                 .anyMatch(m -> userid.equals(m.getUserid()));
+    }
+
+    public String formatLocalDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return dateTime != null ? dateTime.format(formatter) : "";
+    }
+
+    // regDate 포맷팅 메서드
+    public String getFormattedRegDate() {
+        return formatLocalDateTime(regDate);
+    }
+
+    // updateDate 포맷팅 메서드
+    public String getFormattedUpdateDate() {
+        return formatLocalDateTime(updateDate);
+    }
+
+    // loginTime 포맷팅 메서드
+    public String getFormattedLoginTime() {
+        return formatLocalDateTime(loginTime);
     }
 
 }
