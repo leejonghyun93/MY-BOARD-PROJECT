@@ -28,4 +28,6 @@ public interface UserService {
 
     // 수정화면
     int updateUser(UserDto userDto);
+
+    void deleteUser(String userId);
 }

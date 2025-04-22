@@ -18,7 +18,10 @@ public class BoardDto {
     private String title;
     private String content;
     private String writer;
+    private String guestWriter;
     private String passwd;
     private String regDate;
     private int viewCount;
+    private String nickName;
+    private boolean isPrivate;
 }

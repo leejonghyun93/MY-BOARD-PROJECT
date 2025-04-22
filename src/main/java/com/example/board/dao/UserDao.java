@@ -30,4 +30,8 @@ public interface UserDao {
     void unlockAccount(String userid); // 관리자 전용
 
     int update(UserDto userDto);
+
+    void deleteUser(String userId);
+
+    void updateWriterToNull(String userId);
 }

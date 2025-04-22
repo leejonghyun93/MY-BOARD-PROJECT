@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -199,5 +200,18 @@ public class UserApiController {
         response.put("redirectUrl", "/memberList");
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/user/delete")
+    public String deleteUser(HttpSession session, RedirectAttributes rttr) {
+        String userId = (String) session.getAttribute("userid");
+
+        if (userId != null) {
+            userService.deleteUser(userId);
+            session.invalidate(); // 세션 제거
+            rttr.addFlashAttribute("message", "회원 탈퇴가 완료되었습니다.");
+        }
+
+        return "redirect:/";
     }
 }

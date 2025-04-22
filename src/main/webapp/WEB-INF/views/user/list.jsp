@@ -182,11 +182,10 @@
     });
     function loadUserDetail(userid) {
         fetch(`/detail/`+ encodeURIComponent(userid), {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'userid=' + encodeURIComponent(userid)
+            }
         })
             .then(response => response.text())
             .then(html => {

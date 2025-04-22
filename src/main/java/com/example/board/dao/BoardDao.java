@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface BoardDao {
@@ -22,4 +23,10 @@ public interface BoardDao {
     int update(BoardDto boardDto);
 
     int delete(BoardDto boardDto);
+
+    Optional<BoardDto> findById(Integer bno);
+
+    boolean checkPassword(Integer bno, String passwd);
+
+    void insert(BoardDto boardDto);
 }

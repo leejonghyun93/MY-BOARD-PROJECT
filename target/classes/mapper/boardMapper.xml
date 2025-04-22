@@ -20,8 +20,10 @@
                 title LIKE CONCAT('%', #{searchValue}, '%')
             </if>
         </where>
+        WHERE is_private = "Y"
         ORDER BY bno
         LIMIT #{startRow}, #{pageSize}
+
     </select>
 
     <select id="getSelectBoardDetail" resultType="com.example.board.dto.BoardDto">
@@ -51,20 +53,37 @@
         WHERE bno = #{bno}
           AND passwd = #{passwd}
     </delete>
-<!--    <update id="updateUser" parameterType="com.example.board.dto.BoardDto">-->
-<!--        UPDATE t_board-->
-<!--        SET-->
-<!--            userid = #{userid},-->
-<!--            passwd = #{passwd},-->
-<!--            name = #{name},-->
-<!--            age = #{age},-->
-<!--            address = #{address},-->
-<!--            detailAddress = #{detailAddress},-->
-<!--            fullAddress = #{fullAddress},-->
-<!--            phone = #{phone},-->
-<!--            email = #{email},-->
-<!--            updateDate = NOW(),-->
-<!--            role = #{role}-->
-<!--        WHERE userid = #{userid}-->
-<!--    </update>-->
+
+    <select id="findById" resultType="com.example.board.dto.BoardDto">
+        SELECT * FROM t_board WHERE bno = #{bno}
+    </select>
+
+    <!-- 비밀번호 확인 -->
+    <select id="checkPassword" resultType="Integer">
+        SELECT COUNT(*)
+        FROM t_board
+        WHERE bno = #{bno}
+          AND passwd = #{passwd}
+    </select>
+
+    <insert id="insert" parameterType="com.example.board.dto.BoardDto">
+        INSERT INTO t_board (
+            title,
+            content,
+            writer,
+            nickName,
+            passwd,
+            regDate,
+            viewCount
+        ) VALUES (
+                     #{title},
+                     #{content},
+                     #{writer},
+                     #{nickName},
+                     #{passwd},
+                     NOW(),
+                     #{viewCount}
+                 )
+    </insert>
+
 </mapper>

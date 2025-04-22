@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class BoardDaoImpl implements BoardDao {
@@ -54,4 +55,23 @@ public class BoardDaoImpl implements BoardDao {
     public int delete(BoardDto boardDto) {
         return sqlSession.delete(NAMESPACE + ".deleteBoard", boardDto);
     }
+
+    @Override
+    public Optional<BoardDto> findById(Integer bno) {
+        BoardDto board = sqlSession.selectOne(NAMESPACE + ".findById", bno);
+        return Optional.ofNullable(board);
+    }
+
+    @Override
+    public boolean checkPassword(Integer bno, String passwd) {
+        // 비밀번호가 맞는지 확인
+        Integer result = sqlSession.selectOne(NAMESPACE + ".checkPassword", Map.of("bno", bno, "passwd", passwd));
+        return result != null && result > 0;
+    }
+
+    @Override
+    public void insert(BoardDto boardDto)  {
+        sqlSession.insert(NAMESPACE + ".insert", boardDto);
+    }
+
 }

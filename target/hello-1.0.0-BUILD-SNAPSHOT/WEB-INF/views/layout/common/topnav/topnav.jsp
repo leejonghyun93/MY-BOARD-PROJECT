@@ -53,7 +53,7 @@
 </head>
 <body>
 
-<div class="container-fluid">
+
     <!-- 네비게이션 바 -->
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 custom-navbar">
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">홈</a>
@@ -61,7 +61,7 @@
                aria-label="Search">
         <ul class="navbar-nav px-3 flex-row">
             <li class="nav-item text-nowrap ml-3">
-                <a class="nav-link" href="<c:url value='${loginOutLink}'/>">${loginId == '' ? '로그인' : loginName}</a>
+                <a class="nav-link"  href="<c:url value='${loginOutLink}'/>">${loginId == '' ? '로그인' : loginName}</a>
             </li>
             <c:if test="${not empty loginId}">
                 <li class="nav-item text-nowrap ml-3">
@@ -80,7 +80,7 @@
         </ul>
     </nav>
 
-</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const logoutForm = document.querySelector("form[action='/logout']");
@@ -89,7 +89,7 @@
             logoutForm.addEventListener("submit", function (e) {
                 e.preventDefault();
 
-                fetch("api/logout", {
+                fetch("/api/logout", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -110,6 +110,7 @@
             });
         }
     });
+
 </script>
 
 <!-- Bootstrap JavaScript 포함 -->

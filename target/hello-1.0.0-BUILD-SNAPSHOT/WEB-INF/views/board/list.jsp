@@ -62,7 +62,10 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="container mt-5" id="content-area">
-                <h2 class="mb-4">게시판 목록</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center;" class="mb-4">
+                    <h2>게시판 목록</h2>
+                    <a href="/board/write" class="btn btn-primary">글쓰기</a>
+                </div>
 
                 <!-- 페이지 사이즈 선택 -->
                 <form id="sizeForm" method="post" action="/boardList">
@@ -101,6 +104,7 @@
                             <col class="col-writer">
                             <col class="col-date">
                             <col class="col-view">
+
                         </colgroup>
                         <thead style="background-color: #f2f2f2;">
                         <tr>
@@ -110,6 +114,7 @@
                             <th onclick="sortTable(3)">작성자 ▲▼</th>
                             <th onclick="sortTable(4)">작성일 ▲▼</th>
                             <th onclick="sortTable(5)">조회수 ▲▼</th>
+
                         </tr>
                         </thead>
                         <tbody>
@@ -125,9 +130,19 @@
                                         <td><input type="checkbox" name="boardCheck" value="${board.bno}"></td>
                                         <td>${(pageDTO.page - 1) * pageDTO.pageSize + status.index + 1}</td>
                                         <td><a href="javascript:void(0);" onclick="loadBoardDetail(${board.bno})">${board.title}</a></td>
-                                        <td>${board.writer}</td>
+                                        <td>${board.writer != null ? board.writer : board.nickName}</td>
                                         <td>${board.regDate}</td>
                                         <td>${board.viewCount}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${board.isPrivate}">
+                                                    Y
+                                                </c:when>
+                                                <c:otherwise>
+                                                    N
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                             </c:otherwise>

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,50 @@ public class BoardApiController {
         // ResponseEntity로 반환
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/board/write")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> registerMember(@RequestBody BoardDto boardDto, HttpSession httpSession) {
+        Map<String, Object> response = new HashMap<>();
+
+        // 필수 항목 검사
+        if (boardDto.getTitle() == null || boardDto.getTitle().isEmpty() ||
+                boardDto.getPasswd() == null || boardDto.getPasswd().isEmpty() ||
+                boardDto.getContent() == null || boardDto.getContent().isEmpty()) {
+
+            response.put("success", false);
+            response.put("message", "필수 입력 항목이 누락되었습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        String loginUserId = (String) httpSession.getAttribute("userid");
+
+        if (loginUserId != null) {
+            boardDto.setWriter(loginUserId);  // 회원이면 OK
+            boardDto.setNickName(null);  // 회원이므로 NickName은 null
+        } else {
+            // 비회원일 경우 닉네임을 입력하지 않으면 오류 메시지 반환
+            if (boardDto.getNickName() == null || boardDto.getNickName().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "작성자 이름을 입력해주세요.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            boardDto.setWriter(null);  // 비회원은 writer를 null로 설정
+        }
+
+        // boardService 호출
+        boardService.insert(boardDto);
+
+        // 성공 응답
+        response.put("success", true);
+        response.put("message", "게시글이 성공적으로 등록되었습니다.");
+        response.put("redirectUrl", "/boardList");
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
     @PostMapping("/board/update")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateUser(@RequestBody BoardDto boardDto) {
@@ -61,20 +107,25 @@ public class BoardApiController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/board/delete")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteBoard(@RequestBody BoardDto boardDto) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            boardService.deleteBoard(boardDto);
-            response.put("success", true);
-            response.put("message", "게시글이 삭제되었습니다.");
-            response.put("redirectUrl", "/boardList");
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", e.getMessage());
-        }
+//    @DeleteMapping("/board/delete/{bno}")
+//    public ResponseEntity deleteBoard(
+//            @PathVariable("bno") Integer bno,
+//            @RequestBody BoardDto boardDto) {
+//
+//        Map<String, Object> response = new HashMap<>();
+//        try {
+//            boardDto.setBno(bno); // 경로 변수로 넘어온 bno 설정
+//            boardService.deleteBoard(bno); // 게시글 삭제 수행
+//
+//            response.put("success", true);
+//            response.put("message", "게시글이 삭제되었습니다.");
+//            response.put("redirectUrl", "/boardList");
+//        } catch (Exception e) {
+//            response.put("success", false);
+//            response.put("message", e.getMessage());
+//        }
+//
+//        return ResponseEntity.ok(response);
+//    }
 
-        return ResponseEntity.ok(response);
-    }
 }

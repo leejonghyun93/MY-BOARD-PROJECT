@@ -131,4 +131,13 @@
             role = #{role}
         WHERE userid = #{userid}
     </update>
+
+    <delete id="deleteUser" parameterType="string">
+        DELETE FROM t_member WHERE userid = #{userId}
+    </delete>
+    <update id="updateWriterToNull" parameterType="String">
+        UPDATE t_board
+        SET writer = NULL
+        WHERE writer = #{userId}
+    </update>
 </mapper>

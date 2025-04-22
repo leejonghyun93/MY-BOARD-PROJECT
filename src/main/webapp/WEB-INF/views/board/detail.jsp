@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page session="false" %>
 
 <c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
@@ -11,8 +12,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <title>게시글 상세정보</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
@@ -38,7 +37,7 @@
         main {
             flex: 1;
             background-color: #fff;
-            padding-bottom: 40px; /* 여유 공간 */
+            padding-bottom: 40px;
         }
 
         footer {
@@ -62,7 +61,7 @@
         }
 
         th {
-            background-color: #f1f3f5; /* 밝은 회색 */
+            background-color: #f1f3f5;
             font-weight: 600;
             color: #333;
             width: 20%;
@@ -73,6 +72,7 @@
             color: #222;
         }
     </style>
+
 </head>
 <body>
 <%@ include file="/WEB-INF/views/layout/common/header/header.jsp" %>
@@ -84,7 +84,7 @@
 
         <main class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="container mt-5" id="content-area">
-                <div id="detailFragment">
+                <div id="detailBoardFragment">
                     <h4>📝 게시글 정보</h4>
                     <table class="table table-hover align-middle text-center" style="background-color: white;">
                         <tr>
@@ -93,11 +93,11 @@
                         </tr>
                         <tr>
                             <th>제목</th>
-                            <td>${board.title}</td>
+                            <td>${fn:escapeXml(board.title)}</td>
                         </tr>
                         <tr>
                             <th>내용</th>
-                            <td>${board.content}</td>
+                            <td>${fn:escapeXml(board.content)}</td>
                         </tr>
                         <tr>
                             <th>작성자</th>
@@ -109,7 +109,7 @@
                         </tr>
                         <tr>
                             <th>조회수</th>
-                            <td>${board.viewCount}</td>
+                            <td><c:out value="${board.viewCount}"/></td>
                         </tr>
                     </table>
 
@@ -119,9 +119,19 @@
                                data-login-id="${loginId}" data-writer="${board.writer}"/>
                     </form>
 
-                    <!-- 삭제 버튼 -->
-                    <button type="button" class="btn btn-danger mt-2" id="deleteBtn" data-bno="${board.bno}">삭제</button>
+                    <form method="post" action="/board/delete" onsubmit="return confirmDelete();">
+                        <input type="hidden" name="bno" value="${board.bno}" />
+                        <input type="hidden" name="writer" value="${board.writer}" />
 
+                        <!-- 🔐 비밀번호 입력 필드 추가 -->
+                        <div class="form-group mt-2">
+                            <label for="passwd">비밀번호 확인:</label>
+                            <input type="password" class="form-control" id="passwd" name="passwd" required />
+                        </div>
+
+                        <input type="submit" value="삭제" class="btn btn-danger mt-2"/>
+
+                    </form>
 
 
                 </div>
@@ -131,10 +141,18 @@
 </div>
 
 <%@ include file="/WEB-INF/views/layout/common/footer/footer.jsp" %>
-
+</body>
+<c:if test="${not empty msg}">
+    <script>
+        alert("${msg}");
+    </script>
+</c:if>
 <script>
+    function confirmDelete() {
+        return confirm("정말 삭제하시겠습니까?");
+    }
+    document.addEventListener("DOMContentLoaded", function() {
 
-    document.addEventListener("DOMContentLoaded", function () {
         // 수정 버튼 권한 체크
         const editButton = document.getElementById("editButton");
         if (editButton) {
@@ -143,42 +161,11 @@
 
             editButton.addEventListener("click", function (event) {
                 if (loginId !== writer) {
-                    event.preventDefault(); // form 제출 막기
+                    event.preventDefault();
                     alert("작성자 본인만 수정할 수 있습니다.");
                 }
             });
         }
-        const deleteBtn = document.getElementById("deleteBtn");
-
-        if (deleteBtn) {
-            deleteBtn.addEventListener("click", function () {
-                const bno = deleteBtn.getAttribute("data-bno");
-
-                if (confirm("정말 삭제하시겠습니까?")) {
-                    fetch("/api/board/delete", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ bno: bno })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert(data.message);
-                                window.location.href = data.redirectUrl;
-                            } else {
-                                alert("삭제 실패: " + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            alert("오류 발생: " + error);
-                        });
-                }
-            });
-        }
     });
-
 </script>
-</body>
 </html>

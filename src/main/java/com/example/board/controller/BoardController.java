@@ -44,13 +44,7 @@ public class BoardController {
     @PostMapping("/board/detail/{bno}")
     public String boardDetail(@PathVariable Integer bno, HttpSession session, Model model) {
         // 세션에서 로그인된 사용자 아이디를 가져옴
-//        String userid = (String) session.getAttribute("userid");
-//
-//        // userid가 없으면 로그인 페이지로 리다이렉트
-//        if (userid == null) {
-//            model.addAttribute("message","로그인 후 이용 가능합니다.");
-//            return "redirect:/login";
-//        }
+
         boardService.increaseViewCount(bno);
         // 사용자 상세 정보를 가져옴
         BoardDto board = boardService.getBoardDetail(bno);
@@ -60,6 +54,16 @@ public class BoardController {
 
         // 상세 페이지로 이동
         return "board/detail";
+    }
+
+    @GetMapping("/board/write")
+    public String register(HttpSession session) {
+        // 로그인 상태 확인 후 리다이렉트
+//        if (session.getAttribute("userid") != null) {
+//            return "/board/write";
+//        }
+
+        return "/board/write";
     }
 
     @GetMapping("/board/editForm")
@@ -82,4 +86,42 @@ public class BoardController {
         model.addAttribute("board", board);
         return "board/editForm";
     }
+    @PostMapping("/board/delete")
+    public String deleteBoard(@RequestParam("bno") int bno,
+                              @RequestParam("writer") String writer,
+                              @RequestParam("passwd") String passwd,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
+
+        String loginId = (String) session.getAttribute("userid");
+
+        if (!writer.equals(loginId)) {
+            model.addAttribute("msg", "삭제 권한이 없습니다.");
+            return "redirect:/boardList";
+        }
+
+        BoardDto dto = new BoardDto();
+        dto.setBno(bno);
+        dto.setPasswd(passwd);
+
+        boolean isCorrect = boardService.checkPassword(bno, passwd);
+        if (!isCorrect) {
+            model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/boardList";
+        }
+
+        int result = boardService.deleteBoard(dto);
+
+        if (result > 0) {
+            model.addAttribute("msg", "게시글이 삭제되었습니다.");
+            return "redirect:/boardList";
+        } else {
+            model.addAttribute("msg", "게시글 삭제에 실패했습니다.");
+            return "redirect:/boardList";
+        }
+    }
+
+
+
 }

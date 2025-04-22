@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page session="false" %>
 
 <c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
@@ -123,6 +124,9 @@
                     <form method="get" action="/user/editForm">
                         <input type="submit" value="수정" class="btn btn-primary"/>
                     </form>
+                    <form method="post">
+                        <input type="submit" value="탈퇴" class="btn btn-delete" id="deleteButton"/>
+                    </form>
                 </div>
             </div>
         </main>
@@ -133,6 +137,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const editButton = document.getElementById("editButton");
+        const deleteButton = document.getElementById("deleteButton");
 
         if (editButton) {
             editButton.addEventListener("click", function () {
@@ -157,6 +162,37 @@
             });
         } else {
             console.warn("editButton 요소를 찾을 수 없습니다.");
+        }
+
+        if (deleteButton) {
+            deleteButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                if (!confirm("정말로 탈퇴하시겠습니까?")) {
+                    return;
+                }
+
+                fetch("/api/user/delete", { // 경로 주의!
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("HTTP error " + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert("회원 탈퇴가 완료되었습니다.");
+                        window.location.href = "/";
+                    })
+                    .catch(error => {
+                        console.error("회원 탈퇴 중 오류 발생:", error);
+                        alert("회원 탈퇴에 실패했습니다.");
+                    });
+            });
         }
     });
 </script>

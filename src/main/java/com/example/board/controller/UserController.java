@@ -62,22 +62,22 @@ public class UserController {
 
         return "user/list"; // JSP 위치: /WEB-INF/views/user/list.jsp
     }
-
-    @PostMapping("/detail/{userid}")
+    @GetMapping("/detail/{userid}")
     public String userDetail(@PathVariable String userid, HttpSession session, Model model) {
         // 세션에서 로그인된 사용자 아이디를 가져옴
 //        String userid = (String) session.getAttribute("userid");
-//
-//        // userid가 없으면 로그인 페이지로 리다이렉트
-//        if (userid == null) {
-//            model.addAttribute("message","로그인 후 이용 가능합니다.");
-//            return "redirect:/login";
-//        }
+
+        // userid가 없으면 로그인 페이지로 리다이렉트
+        if (userid == null) {
+            model.addAttribute("message","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
 
         // 사용자 상세 정보를 가져옴
         UserDto user = userService.getUserDetail(userid);
 
         // 모델에 사용자 정보를 추가
+
         model.addAttribute("user", user);
 
         // 상세 페이지로 이동

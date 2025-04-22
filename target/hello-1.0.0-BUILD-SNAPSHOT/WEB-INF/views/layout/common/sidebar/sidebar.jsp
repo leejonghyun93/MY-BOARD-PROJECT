@@ -2,8 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
 
-<c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
-<c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
+<c:set var="loginId" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userid') != null ? pageContext.request.session.getAttribute('userid') : ''}"/>
+<c:set var="loginName" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
 <c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
 <c:set var="userRole" value="${requestScope.userRole}" />
@@ -26,6 +26,22 @@
                     <span data-feather="file-text"></span> 게시판 목록
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0);" onclick="loadUserDetail('${loginId}')">
+                    <span data-feather="user"></span> 회원 상세보기
+                </a>
+            </li>
+
         </ul>
     </div>
 </nav>
+<script>
+    function loadUserDetail(userid) {
+        if (!userid) {
+            alert("사용자 정보가 없습니다.");
+            return;
+        }
+        const encodedId = encodeURIComponent(userid);
+        window.location.href = "/detail/" + encodedId;
+    }
+</script>

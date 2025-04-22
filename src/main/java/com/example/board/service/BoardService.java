@@ -17,4 +17,8 @@ public interface BoardService {
     int updateBoard(BoardDto boardDto);
 
     int deleteBoard(BoardDto boardDto);
+
+    boolean checkPassword(Integer bno, String passwd);
+
+    void insert(BoardDto boardDto);
 }

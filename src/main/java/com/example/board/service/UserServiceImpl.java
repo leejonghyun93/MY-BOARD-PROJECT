@@ -5,6 +5,7 @@ import com.example.board.dto.PageDTO;
 import com.example.board.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -91,5 +92,11 @@ public class UserServiceImpl implements UserService  {
     public int updateUser(UserDto userDto){
         return userDao.update(userDto);
     }
+    @Override
+    @Transactional
+    public void deleteUser(String userId) {
 
+        userDao.updateWriterToNull(userId);
+        userDao.deleteUser(userId);
+    }
 }
