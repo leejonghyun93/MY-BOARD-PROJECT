@@ -1,5 +1,6 @@
 package com.example.board.dao;
 
+import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.UserDto;
 import org.apache.ibatis.annotations.Param;
 
@@ -40,4 +41,8 @@ public interface UserDao {
     int checkUser(String userid, String email);
 
     int updatePassword(String userid, String newPassword);
+
+    NaverUserInfo findByNaverId(String naverId);
+
+    void insertNaverUser(NaverUserInfo user);
 }

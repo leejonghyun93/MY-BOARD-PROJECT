@@ -6,6 +6,7 @@
     <typeAliases>
         <typeAlias alias="BoardDto" type="com.example.board.dto.BoardDto"/>
         <typeAlias alias="userDto" type="com.example.board.dto.UserDto"/>
+        <typeAlias alias="NaverUserInfo" type="com.example.board.dto.NaverUserInfo"/>
     </typeAliases>
 
 </configuration>

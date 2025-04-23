@@ -38,4 +38,8 @@ public interface BoardDao {
     List<Map<String, Object>> getChartData();
 
     List<Map<String, Object>> getChartPopularity();
+
+    List<Map<String, Object>> getChartUserAccess();
+
+    List<BoardDto> selectMainBoard();
 }

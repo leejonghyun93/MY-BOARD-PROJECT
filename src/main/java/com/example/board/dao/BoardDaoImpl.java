@@ -64,8 +64,12 @@ public class BoardDaoImpl implements BoardDao {
 
     @Override
     public boolean checkPassword(Integer bno, String passwd) {
-        // 비밀번호가 맞는지 확인
-        Integer result = sqlSession.selectOne(NAMESPACE + ".checkPassword", Map.of("bno", bno, "passwd", passwd));
+        // Java 8에서도 돌아가도록 Map을 직접 생성
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("bno", bno);
+        paramMap.put("passwd", passwd);
+
+        Integer result = sqlSession.selectOne(NAMESPACE + ".checkPassword", paramMap);
         return result != null && result > 0;
     }
 
@@ -90,5 +94,13 @@ public class BoardDaoImpl implements BoardDao {
         return sqlSession.selectList(NAMESPACE + ".getChartPopularity");
     }
 
+    @Override
+    public List<Map<String, Object>> getChartUserAccess() {
+        return sqlSession.selectList(NAMESPACE + ".getChartUserAccess");
+    }
 
+    @Override
+    public List<BoardDto> selectMainBoard() {
+        return sqlSession.selectList(NAMESPACE + ".selectMainBoard");
+    }
 }

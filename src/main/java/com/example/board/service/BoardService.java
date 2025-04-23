@@ -30,4 +30,8 @@ public interface BoardService {
 
 
     List<Map<String, Object>> getChartPopularity();
+
+    List<Map<String, Object>> getChartUserAccess();
+
+    List<BoardDto> selectMainBoard();
 }

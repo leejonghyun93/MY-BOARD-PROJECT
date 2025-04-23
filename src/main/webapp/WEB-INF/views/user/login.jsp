@@ -1,3 +1,4 @@
+<%@ page import="java.net.URLEncoder" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
@@ -6,7 +7,18 @@
 <c:set var="loginName" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
 <c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
+<%
+    String clientId = ""''
+    String redirectURI = URLEncoder.encode("http://localhost:8088/naverLogin.do", "UTF-8");
+    String state = "1234"; // CSRF 방지용 랜덤 값
+    String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
+            + "&client_id=" + clientId
+            + "&redirect_uri=" + redirectURI
+            + "&state=" + state
+            + "&scope=name,email";
 
+    request.setAttribute("naverLoginUrl", apiURL);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +34,7 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
+    <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" type="text/javascript"></script>
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
 </head>
@@ -61,6 +73,10 @@
                             <a href="/user/findId" class="me-3">아이디 찾기</a>
                             <a href="/user/findPw" class="me-3">비밀번호 찾기</a>
                         </div>
+                        <c:url value="${naverLoginUrl}" var="naverLoginUrlEncoded"/>
+                        <a href="<%= apiURL %>">
+                            <img height="50" src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인">
+                        </a>
                     </form>
                 </div>
             </div>
@@ -102,6 +118,13 @@
                 alert("로그인 처리 중 문제가 발생했습니다.");
             });
     });
+    var naverLogin = new naver.LoginWithNaverId({
+        clientId: "YOUR_CLIENT_ID",
+        callbackUrl: "http://localhost:8080/naver/callback",
+        isPopup: false,
+        loginButton: { color: "green", type: 3, height: 40 }
+    });
+    naverLogin.init();
 </script>
 </body>
 </html>

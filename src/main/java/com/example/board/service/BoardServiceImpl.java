@@ -3,6 +3,7 @@ package com.example.board.service;
 
 import com.example.board.dao.BoardDao;
 import com.example.board.dto.BoardDto;
+import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.PageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,4 +96,16 @@ public class BoardServiceImpl implements BoardService {
     public List<Map<String, Object>> getChartPopularity(){
         return boardDao.getChartPopularity();
     }
+
+    @Override
+    public List<Map<String, Object>> getChartUserAccess(){
+        return boardDao.getChartUserAccess();
+    }
+
+    @Override
+    public List<BoardDto> selectMainBoard() {
+        return boardDao.selectMainBoard();
+    }
+
+
 }

@@ -165,11 +165,6 @@ public class UserApiController {
         return ResponseEntity.ok(response);
     }
 
-//    @GetMapping("/user/{userid}")
-//    public ResponseEntity<UserDto> getUserInfo(@PathVariable String userid) {
-//        UserDto user = userService.getUserDetail(userid);
-//        return ResponseEntity.ok(user);
-//    }
     @PostMapping(value = "/unlockAccount", produces = "text/plain; charset=UTF-8")
     @ResponseBody
     public String unlockAccount(@RequestParam("userid") String userid, HttpSession session) {

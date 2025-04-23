@@ -107,7 +107,19 @@
                             <input type="text" name="passwd" id="lockNo" placeholder="잠금 번호를 입력하세요">
                         </div>
 
-                        <button type="submit">수정 완료</button>
+                        <div class="form-group">
+                            <!-- 수정 완료, 목록, 뒤로가기 버튼을 같은 줄에 배치 -->
+                            <div class="d-flex justify-content-between">
+                                <!-- 수정 완료 버튼 -->
+                                <button type="submit" class="btn btn-primary">수정 완료</button>
+
+                                <!-- 목록으로 버튼 -->
+                                <a href="/boardList" class="btn btn-secondary">목록</a>
+
+                                <!-- 뒤로가기 버튼 -->
+                                <a href="javascript:void(0);" class="btn btn-secondary" onclick="loadBoardDetail('${board.bno}')">뒤로가기</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -170,5 +182,26 @@
                 });
         });
     });
+    function loadBoardDetail(bno) {
+        fetch(`/board/detail/` + bno, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContentArea = doc.querySelector('#content-area');
+                if (newContentArea) {
+                    document.querySelector('#content-area').innerHTML = newContentArea.innerHTML;
+                }
+            })
+            .catch(error => {
+                alert('게시글 정보를 불러오는 데 실패했습니다.');
+                console.error('Error:', error);
+            });
+    }
 </script>
 </html>

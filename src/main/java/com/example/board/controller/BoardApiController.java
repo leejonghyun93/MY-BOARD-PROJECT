@@ -119,25 +119,6 @@ public class BoardApiController {
 
         return ResponseEntity.ok(response);
     }
-//    @DeleteMapping("/board/delete/{bno}")
-//    public ResponseEntity deleteBoard(
-//            @PathVariable("bno") Integer bno,
-//            @RequestBody BoardDto boardDto) {
-//
-//        Map<String, Object> response = new HashMap<>();
-//        try {
-//            boardDto.setBno(bno); // 경로 변수로 넘어온 bno 설정
-//            boardService.deleteBoard(bno); // 게시글 삭제 수행
-//
-//            response.put("success", true);
-//            response.put("message", "게시글이 삭제되었습니다.");
-//            response.put("redirectUrl", "/boardList");
-//        } catch (Exception e) {
-//            response.put("success", false);
-//            response.put("message", e.getMessage());
-//        }
-//
-//        return ResponseEntity.ok(response);
-//    }
+
 
 }

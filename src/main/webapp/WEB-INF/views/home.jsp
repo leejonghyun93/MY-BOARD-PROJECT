@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page session="false" %>
 <c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
 <c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
@@ -21,6 +22,20 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chartGroup1{
+            border-radius: 2px;
+            border: 1px solid #d3d3d3;
+        }
+        .chartGroup2{
+            border-radius: 2px;
+            border: 1px solid #d3d3d3;
+        }
+        .chartGroup3{
+            border-radius: 2px;
+            border: 1px solid #d3d3d3;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,18 +50,18 @@
             <%--            <h1 class="h2">게시판 통계</h1>--%>
             <div class="container">
                 <div class="row">
-                    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-                        <div style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
+                    <div  style="display: flex; flex-wrap: wrap; justify-content: center; padding-left: 0px;">
+                        <div class="chartGroup1" style="flex: 0 0 35%; max-width: 50%; display: flex; justify-content: center;">
                             <%--게시글 최신순--%>
-                            <canvas id="chart1" width="300" height="300" style="margin: 10px;"></canvas>
+                            <canvas id="chart1" width="350" height="300" style="margin: 10px;"></canvas>
                         </div>
-                        <div style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
+                        <div class="chartGroup2" style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
                             <%--게시글 인기순--%>
-                            <canvas id="chart2" width="300" height="300" style="margin: 10px;"></canvas>
+                            <canvas id="chart2" width="350" height="300" style="margin: 10px;"></canvas>
                         </div>
-                        <div style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
+                        <div class="chartGroup3" style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
                             <%--유저 접속순 --%>
-                            <canvas id="chart3" width="300" height="300" style="margin: 10px;"></canvas>
+                            <canvas id="chart3" width="350" height="300" style="margin: 10px;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -114,150 +129,79 @@
                             }
                         });
                     });
-                // 버블그래프
-                new Chart(document.getElementById('chart3'), {
-                    type: 'bubble',
-                    data: {
-                        datasets: [{
-                            label: '버블그래프',
-                            data: [
-                                {x: 10, y: 20, r: 10},
-                                {x: 15, y: 10, r: 15},
-                                {x: 20, y: 30, r: 20}
-                            ],
-                            backgroundColor: 'rgba(255,99,132,0.5)'
-                        }]
-                    },
-                    options: {responsive: false}
-                });
+                fetch("/chart/userAccess")
+                    .then(res => res.json())
+                    .then(data => {
+                        const bubbleData = data.map(item => ({
+                            x: new Date(item.login_day).getTime(),       // X축: 날짜 (타임스탬프)
+                            y: item.total_logins,                        // Y축: 로그인 수
+                            r: Math.sqrt(item.unique_users) * 1          // 반지름: 유니크 유저 수 (스케일 조정)
+                        }));
+
+                        new Chart(document.getElementById('chart3'), {
+                            type: 'bubble',
+                            data: {
+                                datasets: [{
+                                    label: '일자별 로그인/유니크 유저',
+                                    data: bubbleData,
+                                    backgroundColor: 'rgba(255,99,132,0.5)'
+                                }]
+                            },
+                            options: {
+                                responsive: false,
+                                scales: {
+                                    x: {
+                                        type: 'linear',
+                                        position: 'bottom',
+                                        ticks: {
+                                            callback: function(value) {
+                                                return new Date(value).toISOString().split('T')[0];
+                                            }
+                                        },
+                                        title: {
+                                            display: true,
+                                            text: '날짜'
+                                        }
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
 
             </script>
 
-            <h2>Section title</h2>
+            <h2>최신 글 </h2>
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Header</th>
-                        <th>Header</th>
-                        <th>Header</th>
-                        <th>Header</th>
+                        <th>번호</th>
+                        <th>회원이름</th>
+                        <th>글번호</th>
+                        <th>제목</th>
+                        <th>내용</th>
+                        <th>작성자ID</th>
+                        <th>작성일</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1,001</td>
-                        <td>Lorem</td>
-                        <td>ipsum</td>
-                        <td>dolor</td>
-                        <td>sit</td>
-                    </tr>
-                    <tr>
-                        <td>1,002</td>
-                        <td>amet</td>
-                        <td>consectetur</td>
-                        <td>adipiscing</td>
-                        <td>elit</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>Integer</td>
-                        <td>nec</td>
-                        <td>odio</td>
-                        <td>Praesent</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>libero</td>
-                        <td>Sed</td>
-                        <td>cursus</td>
-                        <td>ante</td>
-                    </tr>
-                    <tr>
-                        <td>1,004</td>
-                        <td>dapibus</td>
-                        <td>diam</td>
-                        <td>Sed</td>
-                        <td>nisi</td>
-                    </tr>
-                    <tr>
-                        <td>1,005</td>
-                        <td>Nulla</td>
-                        <td>quis</td>
-                        <td>sem</td>
-                        <td>at</td>
-                    </tr>
-                    <tr>
-                        <td>1,006</td>
-                        <td>nibh</td>
-                        <td>elementum</td>
-                        <td>imperdiet</td>
-                        <td>Duis</td>
-                    </tr>
-                    <tr>
-                        <td>1,007</td>
-                        <td>sagittis</td>
-                        <td>ipsum</td>
-                        <td>Praesent</td>
-                        <td>mauris</td>
-                    </tr>
-                    <tr>
-                        <td>1,008</td>
-                        <td>Fusce</td>
-                        <td>nec</td>
-                        <td>tellus</td>
-                        <td>sed</td>
-                    </tr>
-                    <tr>
-                        <td>1,009</td>
-                        <td>augue</td>
-                        <td>semper</td>
-                        <td>porta</td>
-                        <td>Mauris</td>
-                    </tr>
-                    <tr>
-                        <td>1,010</td>
-                        <td>massa</td>
-                        <td>Vestibulum</td>
-                        <td>lacinia</td>
-                        <td>arcu</td>
-                    </tr>
-                    <tr>
-                        <td>1,011</td>
-                        <td>eget</td>
-                        <td>nulla</td>
-                        <td>Class</td>
-                        <td>aptent</td>
-                    </tr>
-                    <tr>
-                        <td>1,012</td>
-                        <td>taciti</td>
-                        <td>sociosqu</td>
-                        <td>ad</td>
-                        <td>litora</td>
-                    </tr>
-                    <tr>
-                        <td>1,013</td>
-                        <td>torquent</td>
-                        <td>per</td>
-                        <td>conubia</td>
-                        <td>nostra</td>
-                    </tr>
-                    <tr>
-                        <td>1,014</td>
-                        <td>per</td>
-                        <td>inceptos</td>
-                        <td>himenaeos</td>
-                        <td>Curabitur</td>
-                    </tr>
-                    <tr>
-                        <td>1,015</td>
-                        <td>sodales</td>
-                        <td>ligula</td>
-                        <td>in</td>
-                        <td>libero</td>
-                    </tr>
+                    <c:forEach var="board" items="${boardList}" varStatus="status">
+                        <tr>
+                            <td>${status.count}</td>
+                            <td>${board.name}</td>
+                            <td>${board.bno}</td>
+                            <td>${board.title}</td>
+                            <td>${board.content}</td>
+                            <td>${board.writer}</td>
+                            <td>${board.getFormattedRegDate()}</td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

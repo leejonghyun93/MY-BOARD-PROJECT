@@ -12,6 +12,5 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
     <!-- Custom CSS -->
-    <link href="<c:url value='/resources/css/dashboard.css'/>" rel="stylesheet">
 </head>
 <body>

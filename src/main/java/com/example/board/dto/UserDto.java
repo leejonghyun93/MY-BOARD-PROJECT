@@ -38,10 +38,10 @@ public class UserDto {
     private int loginFailCount;
 
     // 계정 잠금 여부 추가
-    private int  accountLocked;
+    private Boolean   accountLocked;
 
     public boolean isAccountLocked() {
-        return accountLocked == 1;
+        return accountLocked == true ? true : false;
     }
 
 

@@ -54,32 +54,29 @@
 <body>
 
 
-    <!-- 네비게이션 바 -->
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 custom-navbar">
-        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">홈</a>
-        <input class="form-control form-control-dark w-100 custom-search" type="text" placeholder="Search"
-               aria-label="Search">
-        <ul class="navbar-nav px-3 flex-row">
+<!-- 네비게이션 바 -->
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 custom-navbar">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">홈</a>
+    <ul class="navbar-nav px-3 flex-row">
+        <li class="nav-item text-nowrap ml-3">
+            <a class="nav-link"  href="<c:url value='${loginOutLink}'/>">${loginId == '' ? '로그인' : loginName}</a>
+        </li>
+        <c:if test="${not empty loginId}">
             <li class="nav-item text-nowrap ml-3">
-                <a class="nav-link"  href="<c:url value='${loginOutLink}'/>">${loginId == '' ? '로그인' : loginName}</a>
+                <form action="<c:url value='/logout'/>" method="post">
+                    <button type="submit" class="nav-link btn btn-link" style="color: #fff; border: none; background: none;">
+                        로그아웃
+                    </button>
+                </form>
             </li>
-            <c:if test="${not empty loginId}">
-                <li class="nav-item text-nowrap ml-3">
-                    <form action="<c:url value='/logout'/>" method="post">
-                        <button type="submit" class="nav-link btn btn-link" style="color: #fff; border: none; background: none;">
-                            로그아웃
-                        </button>
-                    </form>
-                </li>
-            </c:if>
-            <c:if test="${empty loginId}">
-                <li class="nav-item text-nowrap ml-3">
-                    <a class="nav-link" href="<c:url value='/member/register'/>">회원가입</a>
-                </li>
-            </c:if>
-        </ul>
-    </nav>
-
+        </c:if>
+        <c:if test="${empty loginId}">
+            <li class="nav-item text-nowrap ml-3">
+                <a class="nav-link" href="<c:url value='/member/register'/>">회원가입</a>
+            </li>
+        </c:if>
+    </ul>
+</nav>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

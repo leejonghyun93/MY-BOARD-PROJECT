@@ -106,7 +106,7 @@
                         </tr>
                         <tr>
                             <th>로그인 시간</th>
-                            <td>${user.loginTime}</td>
+                            <td>${user.formatLocalDateTime(user.loginTime)}</td>
                         </tr>
                         <tr>
                             <th>나이</th>
@@ -121,12 +121,19 @@
                             <td>${user.email}</td>
                         </tr>
                     </table>
-                    <form method="get" action="/user/editForm">
-                        <input type="submit" value="수정" class="btn btn-primary"/>
-                    </form>
-                    <form method="post">
-                        <input type="submit" value="탈퇴" class="btn btn-delete" id="deleteButton"/>
-                    </form>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <form method="get" action="/user/editForm" class="d-inline-block">
+                                <input type="hidden" name="userid" value="${user.userid}" />
+                                <input type="submit" value="수정" class="btn btn-primary"/>
+                            </form>
+                            <a href="/memberList" class="btn btn-secondary">목록으로</a>
+                        </div>
+
+                        <form method="post" class="d-inline-block">
+                            <input type="submit" value="탈퇴" class="btn btn-danger" id="deleteButton"/>
+                        </form>
+                    </div>
                 </div>
             </div>
         </main>

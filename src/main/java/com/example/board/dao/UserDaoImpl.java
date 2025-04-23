@@ -1,5 +1,6 @@
 package com.example.board.dao;
 
+import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.UserDto;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
@@ -116,5 +117,15 @@ public class UserDaoImpl implements UserDao {
         paramMap.put("userid", userid);
         paramMap.put("password", newPassword);
         return sqlSession.update(NAMESPACE + ".updatePassword", paramMap);
+    }
+
+    @Override
+    public NaverUserInfo findByNaverId(String naverId) {
+        return sqlSession.selectOne(NAMESPACE + ".findByNaverId", naverId);
+    }
+
+    @Override
+    public void insertNaverUser(NaverUserInfo user) {
+        sqlSession.insert(NAMESPACE + ".insertNaverUser", user);
     }
 }

@@ -160,6 +160,24 @@
         SET passwd = #{passwd}
         WHERE userid = #{userid}
     </update>
+    <select id="getLoginStats" resultType="map">
+        SELECT
+            DATE_FORMAT(loginTime, '%Y-%m-%d') AS login_day,
+            COUNT(*) AS total_logins,
+            COUNT(DISTINCT userid) AS unique_users
+        FROM t_member
+        WHERE loginTime IS NOT NULL
+        GROUP BY DATE_FORMAT(loginTime, '%Y-%m-%d')
+        ORDER BY login_day
+    </select>
 
+    <select id="findByNaverId" parameterType="String" resultType="NaverUserInfo">
+        SELECT * FROM t_member WHERE userid = #{naverId}
+    </select>
+
+    <insert id="insertNaverUser" parameterType="com.example.board.dto.NaverUserInfo">
+        INSERT INTO t_member (userid, email, name, social_type)
+        VALUES (#{naverId}, #{email}, #{name}, 'naver')
+    </insert>
 
 </mapper>

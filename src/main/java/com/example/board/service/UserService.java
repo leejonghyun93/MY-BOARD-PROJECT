@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.PageDTO;
 import com.example.board.dto.UserDto;
 
@@ -36,4 +37,6 @@ public interface UserService {
     boolean checkUserForPw(String userid, String email);
 
     String createTemporaryPassword(String userid);
+
+    NaverUserInfo findOrCreateNaverUser(NaverUserInfo user);
 }

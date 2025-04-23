@@ -1,6 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.dao.UserDao;
+import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.PageDTO;
 import com.example.board.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,5 +123,16 @@ public class UserServiceImpl implements UserService  {
     private String generateTempPassword() {
         // 간단한 임시 비밀번호 생성 로직 (예: 8자리 무작위 문자열)
         return UUID.randomUUID().toString().substring(0, 8);
+    }
+
+    @Override
+    public NaverUserInfo findOrCreateNaverUser(NaverUserInfo user) {
+        NaverUserInfo existing = userDao.findByNaverId(user.getNaverId());
+
+        if (existing == null) {
+            userDao.insertNaverUser(user);
+            return user;
+        }
+        return existing;
     }
 }

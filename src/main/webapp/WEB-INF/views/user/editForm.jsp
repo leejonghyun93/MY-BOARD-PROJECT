@@ -119,8 +119,7 @@
                             <label for="userAddress">주소</label>
                             <div class="input-group">
                                 <input type="text" id="userAddress" name="userAddress" class="form-control"
-                                       required
-                                       placeholder="주소를 입력하세요" readonly>
+                                       value="${user.fullAddress}" required placeholder="주소를 입력하세요" readonly>
                                 <div class="input-group-append">
                                     <button type="button" onclick="execDaumPostcode()"
                                             class="btn btn-outline-secondary">주소 찾기
@@ -129,7 +128,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="detailAddressGroup" style="display: none;">
                             <label for="detailAddress">나머지 주소</label>
                             <input type="text" id="detailAddress" name="detailAddress" class="form-control"
                                    placeholder="나머지 주소를 입력하세요">
@@ -149,12 +148,12 @@
 
                         <div class="form-group">
                             <label for="regDate">가입일</label>
-                            <input type="text" name="regDate" value="${user.regDate}" id="regDate" readonly class="form-control">
+                            <input type="text" name="regDate" value="${user.formatLocalDateTime(user.regDate)}" id="regDate" readonly class="form-control">
                         </div>
 
                         <div class="form-group">
                             <label for="updateDate">수정일</label>
-                            <input type="text" name="updateDate" value="${user.updateDate}" id="updateDate" readonly class="form-control">
+                            <input type="text" name="updateDate" value="${user.formatLocalDateTime(user.updateDate)}" id="updateDate" readonly class="form-control">
                         </div>
 
                         <div class="form-group">
@@ -169,12 +168,18 @@
 
                         <div class="form-group">
                             <label for="accountLocked">계정 잠금 여부</label>
-                            <input type="number" name="accountLocked" id="accountLocked"value="${user.accountLocked}" readonly class="form-control">
+                            <input type="text" class="form-control" id="accountLocked" value="${user.accountLocked ? 'Y' : 'N'}" readonly>
                         </div>
-
-                        <button type="submit" class="btn btn-primary">수정 저장</button>
                     </form>
-
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary">수정</button>
+                        </div>
+                        <div>
+                            <a href="/memberList" class="btn btn-secondary">목록으로</a>
+                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="loadUserDetail('${user.userid}')">뒤로가기</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -187,7 +192,31 @@
 
 <script>
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/; // 비밀번호는 영문, 숫자, 특수문자 포함 8자 이상
+    function loadUserDetail(userid) {
+        fetch(`/detail/` + encodeURIComponent(userid), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContentArea = doc.querySelector('#content-area');
+                if (newContentArea) {
+                    document.querySelector('#content-area').innerHTML = newContentArea.innerHTML;
 
+                    // 주소창도 변경
+                    history.pushState(null, '', `/detail/${userid}`);
+                    currentUserId = userid; // 전역 변수 갱신
+                }
+            })
+            .catch(error => {
+                alert('사용자 정보를 불러오는 데 실패했습니다.');
+                console.error('Error:', error);
+            });
+    }
     document.addEventListener('DOMContentLoaded', function () {
         function showAlert() {
             combineAddress();
@@ -291,11 +320,17 @@
     function execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
-                // 기본 주소값 세팅
-                document.getElementById("userAddress").value = data.address;
+                // 도로명 주소나 지번 주소 선택에 따라 주소 결정
+                var fullAddress = data.roadAddress ? data.roadAddress : data.jibunAddress;
 
-                // 주소 + 상세주소 합쳐서 fullAddress에 넣기
-                updateFullAddress();
+                // 주소 입력창에 주소 넣기
+                document.getElementById('userAddress').value = fullAddress;
+
+                // 숨겨진 '나머지 주소' 입력창 보이게 하기
+                document.getElementById('detailAddressGroup').style.display = 'block';
+
+                // 커서를 '나머지 주소' 입력란으로 자동 이동
+                document.getElementById('detailAddress').focus();
             }
         }).open();
     }

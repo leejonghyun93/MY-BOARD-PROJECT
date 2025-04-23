@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page session="false" %>
 
 <c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
@@ -13,7 +14,24 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 상세정보</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<%--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">--%>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const editButton = document.getElementById("editButton");
+            if (editButton) {
+                const loginId = editButton.getAttribute("data-login-id");
+                const writer = editButton.getAttribute("data-writer");
+
+                editButton.addEventListener("click", function (event) {
+                    if (loginId !== writer) {
+                        event.preventDefault();
+                        alert("작성자 본인만 수정할 수 있습니다.");
+                    }
+                });
+            }
+        });
+    </script>
 
     <style>
         html, body {
@@ -105,7 +123,7 @@
                         </tr>
                         <tr>
                             <th>작성일</th>
-                            <td>${board.regDate}</td>
+                            <td>${board.formatLocalDateTime(board.regDate)}</td>
                         </tr>
                         <tr>
                             <th>조회수</th>
@@ -113,27 +131,29 @@
                         </tr>
                     </table>
 
-                    <form method="get" action="/board/editForm">
-                        <input type="hidden" name="bno" value="${board.bno}"/>
-                        <input type="submit" value="수정" class="btn btn-primary" id="editButton"
-                               data-login-id="${loginId}" data-writer="${board.writer}"/>
-                    </form>
+                    <div class="d-flex justify-content-start gap-2 mt-4">
+                        <!-- 목록 버튼 -->
+                        <a href="/boardList" class="btn btn-secondary mr-2">목록</a>
 
-                    <form method="post" action="/board/delete" onsubmit="return confirmDelete();">
+                        <!-- 수정 버튼 -->
+                        <form method="get" action="/board/editForm" class="d-inline">
+                            <input type="hidden" name="bno" value="${board.bno}"/>
+                            <input type="submit" value="수정" class="btn btn-primary"
+                                   id="editButton"
+                                   data-login-id="${loginId}" data-writer="${board.writer}"/>
+                        </form>
+                    </div>
+
+                    <form method="post" action="/board/delete" id="deleteForm">
                         <input type="hidden" name="bno" value="${board.bno}" />
                         <input type="hidden" name="writer" value="${board.writer}" />
-
-                        <!-- 🔐 비밀번호 입력 필드 추가 -->
                         <div class="form-group mt-2">
                             <label for="passwd">비밀번호 확인:</label>
                             <input type="password" class="form-control" id="passwd" name="passwd" required />
                         </div>
-
-                        <input type="submit" value="삭제" class="btn btn-danger mt-2"/>
-
+                        <input type="submit" value="삭제" class="btn btn-danger mt-2"
+                               onclick="return confirm('정말 삭제하시겠습니까?');"/>
                     </form>
-
-
                 </div>
             </div>
         </main>
@@ -141,31 +161,12 @@
 </div>
 
 <%@ include file="/WEB-INF/views/layout/common/footer/footer.jsp" %>
-</body>
-<c:if test="${not empty msg}">
-    <script>
-        alert("${msg}");
-    </script>
-</c:if>
 <script>
-    function confirmDelete() {
-        return confirm("정말 삭제하시겠습니까?");
+    const msg = "${msg}";
+    if (msg !== "") {
+        alert(msg);
     }
-    document.addEventListener("DOMContentLoaded", function() {
-
-        // 수정 버튼 권한 체크
-        const editButton = document.getElementById("editButton");
-        if (editButton) {
-            const loginId = editButton.getAttribute("data-login-id");
-            const writer = editButton.getAttribute("data-writer");
-
-            editButton.addEventListener("click", function (event) {
-                if (loginId !== writer) {
-                    event.preventDefault();
-                    alert("작성자 본인만 수정할 수 있습니다.");
-                }
-            });
-        }
-    });
 </script>
+
+</body>
 </html>

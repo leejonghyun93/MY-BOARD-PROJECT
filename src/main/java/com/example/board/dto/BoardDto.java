@@ -28,8 +28,21 @@ public class BoardDto {
     private String nickName;
     private String isPrivate;
 
+    private String name;
+
     public String getFormattedRegDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return regDate != null ? regDate.format(formatter) : "";
+        return regDate != null ? regDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "";
     }
+    public String formatLocalDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return dateTime != null ? dateTime.format(formatter) : "";
+    }
+    // regDate null 처리 메서드
+    public LocalDateTime getRegDate() {
+        if (regDate == null) {
+            return LocalDateTime.now(); // null일 경우 현재 시간으로 설정
+        }
+        return regDate;
+    }
+
 }

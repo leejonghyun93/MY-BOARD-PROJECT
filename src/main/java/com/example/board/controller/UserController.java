@@ -74,11 +74,9 @@ public class UserController {
     public String accessDenied() {
         return "accessDenied"; // 접근 거부 페이지
     }
+
     @GetMapping("/detail/{userid}")
     public String userDetail(@PathVariable String userid, HttpSession session, Model model) {
-        // 세션에서 로그인된 사용자 아이디를 가져옴
-//        String userid = (String) session.getAttribute("userid");
-
         // userid가 없으면 로그인 페이지로 리다이렉트
         if (userid == null) {
             model.addAttribute("message","로그인 후 이용 가능합니다.");
@@ -97,8 +95,8 @@ public class UserController {
     }
 
     @GetMapping("/user/editForm")
-    public String editForm(HttpServletRequest request, Model model, HttpSession session) {
-        String userid = (String) session.getAttribute("userid");
+    public String editForm(@RequestParam("userid") String userid,  Model model, HttpSession session) {
+//        String userid = (String) session.getAttribute("userid");
         UserDto user = userService.getMember(userid);
         if (user == null) {
             return "redirect:/login";

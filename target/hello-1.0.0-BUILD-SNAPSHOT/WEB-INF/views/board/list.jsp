@@ -15,7 +15,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>회원 목록</title>
+    <title>보드 게시판</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
@@ -42,10 +42,6 @@
             <div class="container mt-5" id="content-area">
                 <div style="display: flex; justify-content: space-between; align-items: center;" class="mb-4">
                     <h2>게시판 목록</h2>
-                    <a href="/board/write" class="btn btn-primary">글쓰기</a>
-                    <c:if test="${userRole eq 'ADMIN'}">
-                        <button id="toggleVisibility" class="btn btn-info" onclick="toggleVisibility()">공개여부 전환</button>
-                    </c:if>
                 </div>
 
                 <!-- 페이지 사이즈 선택 -->
@@ -64,6 +60,7 @@
                 </form>
 
                 <!-- 검색어 입력 -->
+                <!-- 검색어 입력 + 버튼 -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <form method="post" action="/boardList" style="display: flex; align-items: center;">
                         <label for="searchValue" style="margin-right: 8px;">검색어:</label>
@@ -73,6 +70,13 @@
                         <input type="hidden" name="size" value="${pageDTO.pageSize}"/>
                         <input type="submit" value="검색">
                     </form>
+
+                    <div style="display: flex; gap: 10px;">
+                        <a href="/board/write" class="btn btn-primary">글쓰기</a>
+                        <c:if test="${userRole eq 'ADMIN'}">
+                            <button id="toggleVisibility" class="btn btn-info" onclick="toggleVisibility()">공개여부 전환</button>
+                        </c:if>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -117,7 +121,7 @@
                                         <td>${(pageDTO.page - 1) * pageDTO.pageSize + status.index + 1}</td>
                                         <td><a href="javascript:void(0);" onclick="loadBoardDetail(${board.bno})">${board.title}</a></td>
                                         <td>${board.writer != null ? board.writer : board.nickName}</td>
-                                        <td>${board.getFormattedRegDate()}</td>
+                                        <td>${board.formatLocalDateTime(board.regDate)}</td>
                                         <td>${board.viewCount}</td>
                                         <td>${board.isPrivate}</td>
                                     </tr>
@@ -173,11 +177,10 @@
     }
     function loadBoardDetail(bno) {
         fetch(`/board/detail/` + bno, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'bno=' + encodeURIComponent(bno)
         })
             .then(response => response.text())
             .then(html => {

@@ -19,4 +19,28 @@
         ORDER BY viewCount DESC
             LIMIT 5
     </select>
+
+    <select id="getChartUserAccess" resultType="map">
+        SELECT
+            DATE_FORMAT(loginTime, '%Y-%m-%d') AS login_day,
+            COUNT(*) AS total_logins,
+            COUNT(DISTINCT userid) AS unique_users
+        FROM t_member
+        WHERE loginTime IS NOT NULL
+        GROUP BY DATE_FORMAT(loginTime, '%Y-%m-%d')
+        ORDER BY login_day
+    </select>
+
+    <select id="selectMainBoard" resultType="com.example.board.dto.BoardDto">
+        SELECT tm.name,
+               tb.bno,
+               tb.title,
+               tb.content,
+               tb.writer,
+               tb.regDate
+        FROM t_member tm
+        JOIN t_board tb ON tm.userid = tb.writer
+        ORDER BY regDate DESC
+            LIMIT 10
+    </select>
 </mapper>
