@@ -214,4 +214,46 @@ public class UserApiController {
 
         return "redirect:/";
     }
+
+    @PostMapping("/user/findId")
+    @ResponseBody
+    public Map<String, Object> findId(@RequestBody Map<String, String> request) {
+        String name = request.get("name");
+        String email = request.get("email");
+
+        // DB 조회
+        String userId = userService.findIdByNameAndEmail(name, email);
+
+        Map<String, Object> result = new HashMap<>();
+        if (userId != null) {
+            result.put("success", true);
+            result.put("userid", userId);
+        } else {
+            result.put("success", false);
+        }
+
+        return result;
+    }
+
+    @PostMapping("/user/findPw")
+    @ResponseBody
+    public Map<String, Object> findPw(@RequestBody Map<String, String> request) {
+        String userid = request.get("userid");
+        String email = request.get("email");
+
+        Map<String, Object> result = new HashMap<>();
+
+        // 비밀번호 찾기 로직 수행
+        boolean isUserExist = userService.checkUserForPw(userid, email);
+
+        if (isUserExist) {
+            String tempPw = userService.createTemporaryPassword(userid);
+            result.put("success", true);
+            // 메일 전송 로직 호출 가능
+        } else {
+            result.put("success", false);
+        }
+
+        return result;
+    }
 }

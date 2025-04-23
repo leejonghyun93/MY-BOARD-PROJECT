@@ -20,9 +20,7 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
-    <!-- Custom styles for this template -->
-    <link href="dashboard.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -34,8 +32,106 @@
         <%@ include file="/WEB-INF/views/layout/common/sidebar/sidebar.jsp" %>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-            <h1 class="h2">Dashboard</h1>
-            <canvas class="my-4" id="myChart" width="900" height="380"></canvas>
+            <%--            <h1 class="h2">게시판 통계</h1>--%>
+            <div class="container">
+                <div class="row">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+                        <div style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
+                            <%--게시글 최신순--%>
+                            <canvas id="chart1" width="300" height="300" style="margin: 10px;"></canvas>
+                        </div>
+                        <div style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
+                            <%--게시글 인기순--%>
+                            <canvas id="chart2" width="300" height="300" style="margin: 10px;"></canvas>
+                        </div>
+                        <div style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
+                            <%--유저 접속순 --%>
+                            <canvas id="chart3" width="300" height="300" style="margin: 10px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                // 막대그래프
+                fetch("/chart/boardRecent")
+                    .then(res => res.json())
+                    .then(data => {
+                        const labels = data.map(item => item.day);         // 날짜 추출
+                        const values = data.map(item => item.post_count);  // 게시글 수 추출
+
+                        new Chart(document.getElementById('chart1'), {
+                            type: 'bar',
+                            data: {
+                                labels: labels,  // 날짜별 라벨
+                                datasets: [{
+                                    label: '게시글 수',  // 그래프 레이블
+                                    data: values,  // 게시글 수 데이터
+                                    backgroundColor: 'rgba(54, 162, 235, 0.5)'  // 막대 색상
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,  // Y축 0부터 시작
+                                        title: {
+                                            display: true
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                fetch("/chart/boardPopularity")
+                    .then(res => res.json())
+                    .then(data => {
+                        const labels = data.map(item => item.title);       // 게시글 제목
+                        const values = data.map(item => item.vc);           // 조회수
+
+                        new Chart(document.getElementById('chart2'), {
+                            type: 'doughnut',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: '게시글 인기순',
+                                    data: values,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.6)',
+                                        'rgba(54, 162, 235, 0.6)',
+                                        'rgba(255, 206, 86, 0.6)',
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(153, 102, 255, 0.6)'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'right'
+                                    }
+                                }
+                            }
+                        });
+                    });
+                // 버블그래프
+                new Chart(document.getElementById('chart3'), {
+                    type: 'bubble',
+                    data: {
+                        datasets: [{
+                            label: '버블그래프',
+                            data: [
+                                {x: 10, y: 20, r: 10},
+                                {x: 15, y: 10, r: 15},
+                                {x: 20, y: 30, r: 20}
+                            ],
+                            backgroundColor: 'rgba(255,99,132,0.5)'
+                        }]
+                    },
+                    options: {responsive: false}
+                });
+
+            </script>
 
             <h2>Section title</h2>
             <div class="table-responsive">

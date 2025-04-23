@@ -140,4 +140,26 @@
         SET writer = NULL
         WHERE writer = #{userId}
     </update>
+
+    <select id="findIdByNameAndEmail" resultType="String">
+        SELECT userid
+        FROM t_member
+        WHERE name = #{name} AND email = #{email}
+    </select>
+
+    <select id="checkUser" resultType="int">
+        SELECT COUNT(*)
+        FROM t_member
+        WHERE userid = #{userid}
+          AND email = #{email}
+    </select>
+
+    <!-- 임시 비밀번호로 업데이트 -->
+    <update id="updatePassword">
+        UPDATE t_member
+        SET passwd = #{passwd}
+        WHERE userid = #{userid}
+    </update>
+
+
 </mapper>

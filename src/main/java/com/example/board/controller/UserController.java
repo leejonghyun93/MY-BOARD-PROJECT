@@ -105,13 +105,17 @@ public class UserController {
         }
         model.addAttribute("user", user);
 
-        // 요청 헤더로 AJAX 여부 확인
-//        String requestedWith = request.getHeader("X-Requested-With");
-//        if ("XMLHttpRequest".equals(requestedWith)) {
-//            return "user/editForm :: content"; // Thymeleaf 식 fragment 방식 (JSP에서는 잘 안 쓰임)
-//        }
-
         return "user/editForm"; // 전체 페이지 이동
+    }
+
+    @GetMapping("/user/findId")
+    public String selectFindId(){
+        return "user/findId";
+    }
+
+    @GetMapping("/user/findPw")
+    public String selectFindPw(){
+        return "user/findPwd";
     }
 }
 

@@ -58,8 +58,8 @@
                         </div>
 
                         <div class="text-center mt-3">
-                            <a href="/findId" class="me-3">아이디 찾기</a>
-                            <a href="/findPassword">비밀번호 찾기</a>
+                            <a href="/user/findId" class="me-3">아이디 찾기</a>
+                            <a href="/user/findPw" class="me-3">비밀번호 찾기</a>
                         </div>
                     </form>
                 </div>

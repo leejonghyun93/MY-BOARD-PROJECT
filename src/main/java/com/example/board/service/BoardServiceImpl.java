@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -83,5 +84,15 @@ public class BoardServiceImpl implements BoardService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> getChartData() {
+        return boardDao.getChartData();
+    }
+
+    @Override
+    public List<Map<String, Object>> getChartPopularity(){
+        return boardDao.getChartPopularity();
     }
 }

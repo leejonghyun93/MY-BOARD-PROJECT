@@ -34,4 +34,10 @@ public interface UserDao {
     void deleteUser(String userId);
 
     void updateWriterToNull(String userId);
+
+    String findIdByNameAndEmail(String name, String email);
+
+    int checkUser(String userid, String email);
+
+    int updatePassword(String userid, String newPassword);
 }

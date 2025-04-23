@@ -4,6 +4,7 @@ import com.example.board.dto.BoardDto;
 import com.example.board.dto.PageDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BoardService {
     int getTotalCount(String searchValue);
@@ -23,4 +24,10 @@ public interface BoardService {
     void insert(BoardDto boardDto);
 
     boolean toggleVisibility(List<Long> boardIds);
+
+
+    List<Map<String, Object>> getChartData();
+
+
+    List<Map<String, Object>> getChartPopularity();
 }

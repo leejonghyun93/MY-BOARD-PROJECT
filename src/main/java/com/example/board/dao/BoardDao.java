@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Mapper
@@ -31,4 +32,10 @@ public interface BoardDao {
     void insert(BoardDto boardDto);
 
     boolean updateBoardVisibility(List<Long> boardIds);
+
+
+
+    List<Map<String, Object>> getChartData();
+
+    List<Map<String, Object>> getChartPopularity();
 }

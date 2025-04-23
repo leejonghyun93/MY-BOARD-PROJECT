@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService  {
@@ -98,5 +99,28 @@ public class UserServiceImpl implements UserService  {
 
         userDao.updateWriterToNull(userId);
         userDao.deleteUser(userId);
+    }
+
+    @Override
+    public String findIdByNameAndEmail(String name, String email) {
+        return userDao.findIdByNameAndEmail(name, email);
+    }
+
+    @Override
+    public boolean checkUserForPw(String userid, String email) {
+        return userDao.checkUser(userid, email) > 0;
+    }
+
+    @Override
+    public String createTemporaryPassword(String userid) {
+        String tempPw = generateTempPassword(); // 임시 비밀번호 생성
+        userDao.updatePassword(userid, tempPw); // 비밀번호 업데이트
+        // 이메일 발송 로직은 필요시 여기에 작성
+        return tempPw;
+    }
+
+    private String generateTempPassword() {
+        // 간단한 임시 비밀번호 생성 로직 (예: 8자리 무작위 문자열)
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }

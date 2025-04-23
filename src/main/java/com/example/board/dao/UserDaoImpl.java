@@ -93,4 +93,28 @@ public class UserDaoImpl implements UserDao {
     public void updateWriterToNull(String userId) {
         sqlSession.update(NAMESPACE + ".updateWriterToNull", userId);
     }
+
+    @Override
+    public String findIdByNameAndEmail(String name, String email) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("email", email);
+        return sqlSession.selectOne(NAMESPACE + ".findIdByNameAndEmail", params);
+    }
+
+    @Override
+    public int checkUser(String userid, String email) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("userid", userid);
+        paramMap.put("email", email);
+        return sqlSession.selectOne(NAMESPACE + ".checkUser", paramMap);
+    }
+
+    @Override
+    public int updatePassword(String userid, String newPassword) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("userid", userid);
+        paramMap.put("password", newPassword);
+        return sqlSession.update(NAMESPACE + ".updatePassword", paramMap);
+    }
 }

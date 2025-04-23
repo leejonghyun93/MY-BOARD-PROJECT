@@ -30,4 +30,10 @@ public interface UserService {
     int updateUser(UserDto userDto);
 
     void deleteUser(String userId);
+
+    String findIdByNameAndEmail(String name, String email);
+
+    boolean checkUserForPw(String userid, String email);
+
+    String createTemporaryPassword(String userid);
 }
