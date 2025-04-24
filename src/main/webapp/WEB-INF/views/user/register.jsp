@@ -275,16 +275,14 @@
     }
 
     function combineAddress() {
-        const userAddress = document.getElementById("userAddress").value.trim();
-        const detailAddress = document.getElementById("detailAddress").value.trim();
-
-        if (userAddress && detailAddress) {
-            const combined = `${userAddress} ${detailAddress}`.trim();
-            document.getElementById("fullAddress").value = combined;
-        } else {
-            document.getElementById("fullAddress").value = '';
-        }
+        const addr = document.getElementById("userAddress").value;
+        const detail = document.getElementById("detailAddress").value;
+        document.getElementById("fullAddress").value = addr + " " + detail;
     }
+
+    document.getElementById("userAddress").addEventListener("input", combineAddress);
+    document.getElementById("detailAddress").addEventListener("input", combineAddress);
+
 </script>
 
 

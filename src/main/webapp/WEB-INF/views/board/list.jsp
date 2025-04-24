@@ -3,9 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page session="false" %>
 
-<c:set var="loginId" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userid') != null ? pageContext.request.session.getAttribute('userid') : ''}"/>
-<c:set var="loginName" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
-<c:set var="userRole" value="${pageContext.request.getSession(false) != null ? pageContext.request.session.getAttribute('userRole') : ''}" />
+<c:set var="loginId"
+       value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userid') != null ? pageContext.request.session.getAttribute('userid') : ''}"/>
+<c:set var="loginName"
+       value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
+<c:set var="userRole"
+       value="${pageContext.request.getSession(false) != null ? pageContext.request.session.getAttribute('userRole') : ''}"/>
 
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
 <c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
@@ -19,14 +22,42 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
-        table.table { table-layout: fixed; width: 100%; }
-        .col-check { width: 30px; }
-        .col-num { width: 50px; }
-        .col-title { width: 150px; }
-        .col-writer { width: 80px; }
-        .col-date { width: 100px; }
-        .col-view { width: 50px; }
-        .col-private { width: 50px; }
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+        td, th {
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+        }
+        .col-check {
+            width: 30px;
+        }
+
+        .col-num {
+            width: 50px;
+        }
+
+        .col-title {
+            width: 150px;
+        }
+
+        .col-writer {
+            width: 80px;
+        }
+
+        .col-date {
+            width: 100px;
+        }
+
+        .col-view {
+            width: 50px;
+        }
+
+        .col-private {
+            width: 50px;
+        }
     </style>
 </head>
 <body>
@@ -74,7 +105,8 @@
                     <div style="display: flex; gap: 10px;">
                         <a href="/board/write" class="btn btn-primary">글쓰기</a>
                         <c:if test="${userRole eq 'ADMIN'}">
-                            <button id="toggleVisibility" class="btn btn-info" onclick="toggleVisibility()">공개여부 전환</button>
+                            <button id="toggleVisibility" class="btn btn-info" onclick="toggleVisibility()">공개여부 전환
+                            </button>
                         </c:if>
                     </div>
                 </div>
@@ -90,7 +122,9 @@
                             <col class="col-writer">
                             <col class="col-date">
                             <col class="col-view">
-                            <col class="col-private">
+                            <c:if test="${userRole eq 'ADMIN'}">
+                                <col class="col-private">
+                            </c:if>
                         </colgroup>
                         <thead style="background-color: #f2f2f2;">
                         <tr>
@@ -102,7 +136,9 @@
                             <th onclick="sortTable(3)">작성자 ▲▼</th>
                             <th onclick="sortTable(4)">작성일 ▲▼</th>
                             <th onclick="sortTable(5)">조회수 ▲▼</th>
-                            <th onclick="sortTable(6)">공개여부 ▲▼</th>
+                            <c:if test="${userRole eq 'ADMIN'}">
+                                <th onclick="sortTable(6)">공개여부 ▲▼</th>
+                            </c:if>
                         </tr>
                         </thead>
                         <tbody>
@@ -119,11 +155,14 @@
                                             <td><input type="checkbox" name="boardCheck" value="${board.bno}"></td>
                                         </c:if>
                                         <td>${(pageDTO.page - 1) * pageDTO.pageSize + status.index + 1}</td>
-                                        <td><a href="javascript:void(0);" onclick="loadBoardDetail(${board.bno})">${board.title}</a></td>
-                                        <td>${board.writer != null ? board.writer : board.nickName}</td>
+                                        <td><a href="javascript:void(0);"
+                                               onclick="loadBoardDetail(${board.bno})">${board.title}</a></td>
+                                        <td>${board.writerName != null ? board.writerName : board.nickName}</td>
                                         <td>${board.formatLocalDateTime(board.regDate)}</td>
                                         <td>${board.viewCount}</td>
-                                        <td>${board.isPrivate}</td>
+                                        <c:if test="${userRole eq 'ADMIN'}">
+                                            <td>${board.isPrivate}</td>
+                                        </c:if>
                                     </tr>
                                 </c:forEach>
                             </c:otherwise>
@@ -159,13 +198,13 @@
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ boardIds: boardIds })
+            body: JSON.stringify({boardIds: boardIds})
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     alert('공개 여부가 성공적으로 변경되었습니다.');
-                    location.reload();  // 페이지 새로 고침
+                    location.reload(); // 페이지 새로 고침
                 } else {
                     alert('공개 여부 변경에 실패했습니다.');
                 }
@@ -175,6 +214,7 @@
                 console.error('Error:', error);
             });
     }
+
     function loadBoardDetail(bno) {
         fetch(`/board/detail/` + bno, {
             method: 'GET',

@@ -27,7 +27,7 @@ public class BoardDto {
     private int viewCount;
     private String nickName;
     private String isPrivate;
-
+    private String writerName;
     private String name;
 
     public String getFormattedRegDate() {

@@ -32,14 +32,11 @@
     </select>
 
     <select id="selectMainBoard" resultType="com.example.board.dto.BoardDto">
-        SELECT tm.name,
-               tb.bno,
-               tb.title,
-               tb.content,
-               tb.writer,
-               tb.regDate
-        FROM t_member tm
-        JOIN t_board tb ON tm.userid = tb.writer
+        SELECT
+            b.*,
+            m.name AS writerName
+        FROM t_board b
+                 JOIN t_member m ON b.writer = m.userid
         ORDER BY regDate DESC
             LIMIT 10
     </select>

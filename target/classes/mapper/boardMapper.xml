@@ -12,23 +12,28 @@
     </select>
 
     <select id="selectPagedBoards" resultType="com.example.board.dto.BoardDto">
-        SELECT *
-        FROM t_board
+        SELECT
+        b.*,
+        m.name AS writerName
+        FROM t_board b
+        LEFT JOIN t_member m ON b.writer = m.userid
         <where>
             <if test="searchValue != null and searchValue != ''">
-                title LIKE CONCAT('%', #{searchValue}, '%')
+                b.title LIKE CONCAT('%', #{searchValue}, '%')
             </if>
         </where>
-        ORDER BY bno
+        ORDER BY b.bno
         LIMIT #{startRow}, #{pageSize}
 
     </select>
 
     <select id="getSelectBoardDetail" resultType="com.example.board.dto.BoardDto">
-        SELECT *
-        FROM t_board
+        SELECT
+            b.*,
+            m.name AS writerName
+        FROM t_board b
+        LEFT JOIN t_member m ON b.writer = m.userid
         where bno = #{bno}
-
     </select>
 
     <update id="updateViewCount" parameterType="int">
@@ -72,7 +77,8 @@
             nickName,
             passwd,
             regDate,
-            viewCount
+            viewCount,
+            isPrivate
         ) VALUES (
                      #{title},
                      #{content},
@@ -80,7 +86,8 @@
                      #{nickName},
                      #{passwd},
                      NOW(),
-                     #{viewCount}
+                     #{viewCount},
+                     'Y'
                  )
     </insert>
     <update id="updateBoardVisibility" parameterType="java.util.List">

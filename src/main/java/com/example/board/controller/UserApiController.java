@@ -5,12 +5,11 @@ import com.example.board.dto.UserDto;
 import com.example.board.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,6 +22,9 @@ public class UserApiController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/member/register")
     @ResponseBody
@@ -52,9 +54,15 @@ public class UserApiController {
             userDto.setLoginTime(LocalDateTime.now());
         }
 
+        System.out.println("회원가입 - 평문 비밀번호: " + userDto.getPasswd());
+        String encodedPassword = passwordEncoder.encode(userDto.getPasswd());
+        System.out.println("회원가입 - 암호화된 비밀번호: " + encodedPassword);
+        userDto.setPasswd(encodedPassword);
+
         // 회원가입 진행
         userService.insert(userDto);
 
+        System.out.println("입력된 비밀번호: [" + userDto.getPasswd() + "]");
         response.put("success", true);
         response.put("message", "회원가입이 성공적으로 완료되었습니다.");
         response.put("redirectUrl", "/login");
@@ -105,12 +113,13 @@ public class UserApiController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> login(@RequestParam String userid, @RequestParam String passwd, HttpSession session) {
-
         Map<String, Object> result = new HashMap<>();
-        UserDto user = userService.getMember(userid);
+
+        // 서비스 계층에서 로그인 로직 처리
+        UserDto user = userService.login(userid, passwd);
 
         if (user == null) {
-            result.put("error", "존재하지 않는 아이디입니다.");
+            result.put("error", "존재하지 않는 아이디이거나 비밀번호가 틀렸습니다.");
             return ResponseEntity.status(401).body(result);
         }
 
@@ -120,39 +129,15 @@ public class UserApiController {
             return ResponseEntity.status(403).body(result);
         }
 
-        // 비밀번호 틀림
-        if (!user.getPasswd().equals(passwd)) {
-            userService.increaseLoginFailCount(userid);
-
-            // 🔄 DB에서 최신 로그인 실패 횟수 다시 조회
-            UserDto updatedUser = userService.getMember(userid);
-            int failCount = updatedUser.getLoginFailCount();
-
-            if (failCount >= 5) {
-                userService.lockAccount(userid);
-                result.put("error", "비밀번호 5회 오류로 계정이 잠겼습니다.");
-            } else {
-                result.put("error", "비밀번호가 틀렸습니다. (" + failCount + "회 실패)");
-            }
-
-            return ResponseEntity.status(401).body(result);
-        }
-
         // 로그인 성공
-        userService.resetLoginFailCount(userid);
-        userService.setLoginTime(userid);
-
         session.setAttribute("userid", user.getUserid());
         session.setAttribute("name", user.getName());
         session.setAttribute("userRole", user.getRole());
-        System.out.println("세션에 저장된 role: " + session.getAttribute("userRole"));
 
-        // request에 userRole 값을 추가
-//        request.setAttribute("userRole", user.getRole());
         result.put("redirectUrl", "/");
         return ResponseEntity.ok(result);
-
     }
+
 
     /** 로그아웃 **/
     @PostMapping("/logout")

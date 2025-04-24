@@ -104,7 +104,7 @@ public class BoardController {
 
         if (!writer.equals(loginId)) {
             rttr.addFlashAttribute("msg", "삭제 권한이 없습니다.");
-            return "redirect:/boardList";
+            return "redirect:/board/detail/" + bno;
         }
 
         if (!boardService.checkPassword(bno, passwd)) {

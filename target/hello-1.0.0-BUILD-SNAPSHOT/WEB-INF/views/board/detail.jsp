@@ -119,7 +119,7 @@
                         </tr>
                         <tr>
                             <th>작성자</th>
-                            <td>${board.writer}</td>
+                            <td>${board.writerName != null ? board.writerName : board.nickName}</td>
                         </tr>
                         <tr>
                             <th>작성일</th>

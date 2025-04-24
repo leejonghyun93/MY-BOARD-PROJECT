@@ -172,7 +172,11 @@
     </select>
 
     <select id="findByNaverId" parameterType="String" resultType="NaverUserInfo">
-        SELECT * FROM t_member WHERE userid = #{naverId}
+        SELECT userid AS naverId,
+               email,
+               name
+        FROM t_member
+        WHERE userid = #{id}
     </select>
 
     <insert id="insertNaverUser" parameterType="com.example.board.dto.NaverUserInfo">

@@ -5,6 +5,8 @@ import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.PageDTO;
 import com.example.board.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,9 @@ public class UserServiceImpl implements UserService  {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDto getMember(String userid) {
@@ -29,14 +34,39 @@ public class UserServiceImpl implements UserService  {
 
     @Override
     public UserDto login(String userid, String passwd) {
+        // 1. 사용자 정보 조회
         UserDto member = userDao.getMember(userid);
-        if (member == null) return null;
+        if (member == null) {
+            System.out.println("존재하지 않는 아이디입니다.");
+            return null;
+        }
 
-        boolean result = member.getPasswd().equals(passwd);
-        if (result == false) return null;
+        // 2. 디버깅: 입력한 비밀번호와 DB에 저장된 비밀번호 출력
+        System.out.println("입력된 비밀번호: " + passwd); // 평문 비밀번호
+        System.out.println("DB에 저장된 암호화된 비밀번호: " + member.getPasswd());
 
+        // 3. 비밀번호 일치 여부 확인
+        boolean isMatch = passwordEncoder.matches(passwd, member.getPasswd());
+        System.out.println("비밀번호 일치 여부: " + isMatch); // 비교 결과
+
+        if (!isMatch) {
+            // 로그인 실패 횟수 증가 및 계정 잠금 여부 처리
+            userDao.increaseLoginFailCount(userid);
+            UserDto updatedUser = userDao.getMember(userid);
+            int failCount = updatedUser.getLoginFailCount();
+
+            if (failCount >= 5) {
+                userDao.lockAccount(userid);
+                System.out.println("비밀번호 5회 오류로 계정이 잠겼습니다.");
+            } else {
+                System.out.println("비밀번호가 틀렸습니다. (" + failCount + "회 실패)");
+            }
+
+            return null;
+        }
+
+        // 로그인 성공: 로그인 시간 갱신
         userDao.setLoginTime(userid);
-
         return member;
     }
 

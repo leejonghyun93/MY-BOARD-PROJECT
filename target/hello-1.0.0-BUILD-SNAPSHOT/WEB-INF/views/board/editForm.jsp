@@ -99,7 +99,7 @@
 
                         <div class="form-group">
                             <label for="writer">작성자</label>
-                            <input type="text" name="writer" id="writer" value="${board.writer}" readonly>
+                            <input type="text" name="writer" id="writer" value="${board.writerName != null ? board.writerName : board.nickName}" readonly>
                         </div>
 
                         <div class="form-group">

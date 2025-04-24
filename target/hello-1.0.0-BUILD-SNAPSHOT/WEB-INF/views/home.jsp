@@ -41,17 +41,16 @@
 <body>
 <%@ include file="/WEB-INF/views/layout/common/header/header.jsp" %>
 <%@ include file="/WEB-INF/views/layout/common/topnav/topnav.jsp" %>
-
 <div class="container-fluid">
     <div class="row">
         <%@ include file="/WEB-INF/views/layout/common/sidebar/sidebar.jsp" %>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <%--            <h1 class="h2">게시판 통계</h1>--%>
-            <div class="container">
+            <div class="container" style="padding-left: 0; padding-right: 0;">
                 <div class="row">
                     <div  style="display: flex; flex-wrap: wrap; justify-content: center; padding-left: 0px;">
-                        <div class="chartGroup1" style="flex: 0 0 35%; max-width: 50%; display: flex; justify-content: center;">
+                        <div class="chartGroup1" style="flex: 0 0 30%; max-width: 50%; display: flex; justify-content: center;">
                             <%--게시글 최신순--%>
                             <canvas id="chart1" width="350" height="300" style="margin: 10px;"></canvas>
                         </div>
@@ -198,7 +197,7 @@
                             <td>${board.bno}</td>
                             <td>${board.title}</td>
                             <td>${board.content}</td>
-                            <td>${board.writer}</td>
+                            <td>${board.writerName != null ? board.writerName : board.nickName}</td>
                             <td>${board.getFormattedRegDate()}</td>
                         </tr>
                     </c:forEach>
