@@ -25,21 +25,35 @@ public class NaverLoginController {
     @Autowired
     private UserService userService;
 
-
+    private final String CLIENT_ID = "개인정보";
+    private final String CLIENT_SECRET = "개인정보";
+    private final String REDIRECT_URI = "http://localhost:8088/naverLogin.do";
 
     @RequestMapping("/naverLogin.do")
     public String naverCallback(@RequestParam("code") String code,
                                 @RequestParam("state") String state,
                                 HttpSession session, Model model) throws Exception {
+
+        // 1. AccessToken 받기
         String accessToken = getAccessToken(code, state);
+
+        // 2. 사용자 정보 가져오기
         NaverUserInfo userInfo = getUserInfo(accessToken);
 
-        // 회원 DB 등록 or 로그인 처리
+        // 3. DB 저장 or 로그인 처리
         NaverUserInfo result = userService.findOrCreateNaverUser(userInfo);
+
+        // 4. 세션 저장naverId
         session.setAttribute("loginUser", result);
-//        session.setAttribute("userid", result.getUserid());
         session.setAttribute("name", result.getName());
-        return "redirect:/"; // 메인으로 이동
+        session.setAttribute("email", result.getEmail());
+        session.setAttribute("userid", result.getNaverId());
+
+//        System.out.println("세션 확인 - userid: " + session.getAttribute("userid"));
+//        System.out.println("세션 확인 - name: " + session.getAttribute("name"));
+//        System.out.println("세션 확인 - email: " + session.getAttribute("email"));
+        System.out.println("세션 확인 - name: " + session.getAttribute("loginUser"));
+        return "redirect:/"; // 메인 페이지로 이동
     }
 
     private String getAccessToken(String code, String state) throws Exception {
@@ -55,8 +69,8 @@ public class NaverLoginController {
         con.setRequestMethod("GET");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
         StringBuilder response = new StringBuilder();
+        String inputLine;
         while ((inputLine = br.readLine()) != null) {
             response.append(inputLine);
         }
@@ -65,34 +79,39 @@ public class NaverLoginController {
         JSONObject json = new JSONObject(response.toString());
         return json.getString("access_token");
     }
+
     private NaverUserInfo getUserInfo(String accessToken) throws Exception {
         String apiURL = "https://openapi.naver.com/v1/nid/me";
-
         URL url = new URL(apiURL);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Authorization", "Bearer " + accessToken);
 
+        // 네이버 API 응답 읽기
         BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
         StringBuilder response = new StringBuilder();
+        String inputLine;
         while ((inputLine = br.readLine()) != null) {
             response.append(inputLine);
         }
         br.close();
-        String jsonResponse = response.toString();
 
-        // JSON 파싱 (네이버 API에서 응답 형식은 { "response" : {...} })
-        JSONObject jsonObject = new JSONObject(jsonResponse);
-        JSONObject responseObject = jsonObject.getJSONObject("response");
+        // 응답을 콘솔에 출력하여 확인하기
+        System.out.println("네이버 API 응답: " + response.toString());
 
-        // 이메일이 있는지 체크 후 값 가져오기
+        // 응답 JSON 파싱
+        JSONObject responseObject = new JSONObject(response.toString()).getJSONObject("response");
+
+        // 필요한 정보 추출
         String email = responseObject.has("email") ? responseObject.getString("email") : null;
-
-        String naverId = responseObject.getString("id");
+        String id = responseObject.getString("id");
         String name = responseObject.getString("name");
 
-        // NaverUserInfo 객체 생성 후 반환
-        return new NaverUserInfo(naverId, email, name);
+        // 디버깅용으로 id, email, name을 출력
+        System.out.println("id: " + id);
+        System.out.println("email: " + email);
+        System.out.println("name: " + name);
+
+        return new NaverUserInfo(id, email, name);
     }
 }

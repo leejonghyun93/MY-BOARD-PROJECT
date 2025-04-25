@@ -111,7 +111,7 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                     <table class="table table-hover align-middle text-center" style="background-color: white;">
                         <colgroup>
                             <c:if test="${userRole eq 'ADMIN'}">

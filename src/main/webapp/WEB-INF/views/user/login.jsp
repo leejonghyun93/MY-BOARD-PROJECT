@@ -7,10 +7,11 @@
 <c:set var="loginName" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
 <c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
 <c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
+
 <%
-    String clientId = ""''
+    String clientId = "개인정보";
     String redirectURI = URLEncoder.encode("http://localhost:8088/naverLogin.do", "UTF-8");
-    String state = "1234"; // CSRF 방지용 랜덤 값
+    String state = "개인정보"; // CSRF 방지용 랜덤 값
     String apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
             + "&client_id=" + clientId
             + "&redirect_uri=" + redirectURI
@@ -42,7 +43,6 @@
 <body>
 <%@ include file="/WEB-INF/views/layout/common/header/header.jsp" %>
 <%@ include file="/WEB-INF/views/layout/common/topnav/topnav.jsp" %>
-
 <div class="container-fluid">
     <div class="row">
         <%@ include file="/WEB-INF/views/layout/common/sidebar/sidebar.jsp" %>
@@ -75,7 +75,7 @@
                         </div>
                         <c:url value="${naverLoginUrl}" var="naverLoginUrlEncoded"/>
                         <a href="<%= apiURL %>">
-                            <img height="50" src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인">
+                            <img height="60" width="100%" src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인">
                         </a>
                     </form>
                 </div>
@@ -88,20 +88,20 @@
 <script>
     document.getElementById("loginForm").addEventListener("submit", function (e) {
         e.preventDefault();
-
         const userid = document.getElementById("userid").value.trim();
         const passwd = document.getElementById("passwd").value.trim();
 
-        const formData = new URLSearchParams();
-        formData.append('userid', userid);
-        formData.append('passwd', passwd);
+        const formData = {
+            userid: userid,
+            passwd: passwd
+        };
 
         fetch("api/login", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                'Content-Type': 'application/json'
             },
-            body: formData
+            body: JSON.stringify(formData) // ← 여기가 핵심!
         })
             .then(response => response.json())
             .then(data => {
@@ -119,10 +119,11 @@
             });
     });
     var naverLogin = new naver.LoginWithNaverId({
-        clientId: "YOUR_CLIENT_ID",
-        callbackUrl: "http://localhost:8080/naver/callback",
+        clientId: "개인정보",
+        callbackUrl: "http://localhost:8088/naver/callback",
         isPopup: false,
-        loginButton: { color: "green", type: 3, height: 40 }
+        loginButton: { color: "green", type: 3, height: 40  },
+        scope: "email"
     });
     naverLogin.init();
 </script>

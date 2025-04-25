@@ -6,7 +6,6 @@ import com.example.board.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -112,7 +111,10 @@ public class UserApiController {
     }
     @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> login(@RequestParam String userid, @RequestParam String passwd, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginData, HttpSession session) {
+        String userid = loginData.get("userid");
+        String passwd = loginData.get("passwd");
+
         Map<String, Object> result = new HashMap<>();
 
         // 서비스 계층에서 로그인 로직 처리

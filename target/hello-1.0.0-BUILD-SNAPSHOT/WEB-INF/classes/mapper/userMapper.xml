@@ -17,6 +17,7 @@
         <result property="loginFailCount" column="login_fail_count"/>
         <result property="accountLocked" column="account_locked"/>
     </resultMap>
+
     <select id="getMember" resultMap="userResultMap">
         SELECT *
         FROM t_member

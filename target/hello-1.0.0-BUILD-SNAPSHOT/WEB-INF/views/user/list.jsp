@@ -96,7 +96,7 @@
                     </form>
                 </div>
                 <!-- 회원 테이블 -->
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                     <table class="table table-hover align-middle text-center" style="background-color: white;">
                         <colgroup>
                             <col class="col-check">

@@ -2,16 +2,14 @@ package com.example.board.controller;
 
 import com.example.board.dto.BoardDto;
 import com.example.board.dto.PageDTO;
-import com.example.board.dto.UserDto;
 import com.example.board.service.BoardService;
-import com.example.board.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -101,11 +99,14 @@ public class BoardController {
             RedirectAttributes rttr) {
 
         String loginId = (String) session.getAttribute("userid");
+        String userRole = (String) session.getAttribute("userRole"); // 관리자 여부 확인용
 
-        if (!writer.equals(loginId)) {
+        // 작성자가 아니고 관리자도 아니라면 삭제 불가
+        if (!writer.equals(loginId) && (userRole == null || !userRole.equals("ADMIN"))) {
             rttr.addFlashAttribute("msg", "삭제 권한이 없습니다.");
             return "redirect:/board/detail/" + bno;
         }
+
 
         if (!boardService.checkPassword(bno, passwd)) {
             rttr.addFlashAttribute("msg", "비밀번호가 일치하지 않습니다.");

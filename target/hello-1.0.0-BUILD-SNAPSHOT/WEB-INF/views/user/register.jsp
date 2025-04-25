@@ -223,9 +223,9 @@
                 return false;
             }
 
-            const phoneRegex = /^[0-9]+$/;
+            const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
             if (!phoneRegex.test(phone)) {
-                alert("전화번호는 숫자만 입력할 수 있습니다.");
+                alert("전화번호는 000-0000-0000 형식으로 입력해야 합니다.");
                 return false;
             }
 
@@ -259,7 +259,7 @@
                     }
                 })
                 .catch(err => {
-                    alert("회원가입 중 오류가 발생했습니다.");
+                    alert("입력하지 않은 항목이 있습니다...다시 확인 해주세요.");
                     console.error(err);
                 });
         });

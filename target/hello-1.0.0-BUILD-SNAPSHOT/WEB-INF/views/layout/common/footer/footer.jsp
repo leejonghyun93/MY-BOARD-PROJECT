@@ -89,7 +89,7 @@
         <div class="row">
             <div class="col">
                 <h5>커뮤니티</h5>
-                <p>고객을 위한 최고의 커뮤니티 경험을 제공합니다.</p>
+                <p>고객을 위한 최고의 msa 커뮤니티 경험을 제공합니다.</p>
             </div>
             <div class="col">
                 <h5>바로가기</h5>
@@ -102,7 +102,7 @@
             <div class="col">
                 <h5>고객센터</h5>
                 <p>전화: 1234-5678</p>
-                <p>이메일: support@example.com</p>
+                <p>이메일: msa@example.com</p>
             </div>
         </div>
 

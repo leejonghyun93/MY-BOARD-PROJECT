@@ -141,7 +141,7 @@
                             type: 'bubble',
                             data: {
                                 datasets: [{
-                                    label: '일자별 로그인/유니크 유저',
+                                    label: '일자별 로그인',
                                     data: bubbleData,
                                     backgroundColor: 'rgba(255,99,132,0.5)'
                                 }]
