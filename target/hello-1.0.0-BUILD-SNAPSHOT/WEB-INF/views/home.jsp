@@ -72,7 +72,6 @@
                     .then(data => {
                         const labels = data.map(item => item.day);         // 날짜 추출
                         const values = data.map(item => item.post_count);  // 게시글 수 추출
-
                         new Chart(document.getElementById('chart1'), {
                             type: 'bar',
                             data: {

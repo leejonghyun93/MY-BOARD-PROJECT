@@ -126,42 +126,4 @@ public class BoardController {
             return "redirect:/board/detail/" + bno;  // 삭제 실패 시 상세 페이지로
         }
     }
-//    @PostMapping("/board/delete")
-//    @ResponseBody
-//    public String deleteBoard(@RequestParam("bno") int bno,
-//                              @RequestParam("writer") String writer,
-//                              @RequestParam("passwd") String passwd,
-//                              HttpSession session,
-//                              RedirectAttributes redirectAttributes,
-//                              Model model) {
-//
-//        String loginId = (String) session.getAttribute("userid");
-//
-//        if (!writer.equals(loginId)) {
-//            redirectAttributes.addFlashAttribute("msg", "삭제 권한이 없습니다.");
-//            return "board/detail";
-//        }
-//
-//        BoardDto dto = new BoardDto();
-//        dto.setBno(bno);
-//        dto.setPasswd(passwd);
-//
-//        boolean isCorrect = boardService.checkPassword(bno, passwd);
-//        if (!isCorrect) {
-//            redirectAttributes.addFlashAttribute("msg", "비밀번호가 일치하지 않습니다.");
-//            return "board/detail";
-//        }
-//
-//        int result = boardService.deleteBoard(dto);
-//
-//        if (result > 0) {
-//            redirectAttributes.addFlashAttribute("msg", "게시글이 삭제되었습니다.");
-//        } else {
-//            redirectAttributes.addFlashAttribute("msg", "게시글 삭제에 실패했습니다.");
-//        }
-//        return "board/detail";
-//    }
-
-
-
 }

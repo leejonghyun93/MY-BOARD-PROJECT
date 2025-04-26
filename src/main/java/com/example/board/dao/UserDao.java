@@ -2,47 +2,109 @@ package com.example.board.dao;
 
 import com.example.board.dto.NaverUserInfo;
 import com.example.board.dto.UserDto;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public interface UserDao {
+@Repository
+public class UserDao {
 
-    UserDto getMember(String userid);
+    @Autowired
+    private SqlSession sqlSession;
 
-    void insert(UserDto userDto);
+    private static final String NAMESPACE = "com.example.board.dao.UserDao";
 
-    void setLoginTime(String userid);
+    public UserDto getMember(String userid){
+        return sqlSession.selectOne(NAMESPACE + ".getMember", userid);
+    }
 
+    public void insert(UserDto userDto)  {
+        sqlSession.insert(NAMESPACE + ".insert", userDto);
+    }
 
-    List<UserDto> selectPagedMembers();
+    public void setLoginTime(String userid){
+        sqlSession.update(NAMESPACE + ".setLoginTime", userid);
+    }
 
-    List<UserDto> selectPagedMembers(@Param("startRow") int startRow,
-                                     @Param("pageSize") int pageSize,
-                                     @Param("searchValue") String searchValue);
+    public List<UserDto> selectPagedMembers(){
+        return sqlSession.selectList(NAMESPACE + ".selectPagedMembers");
+    }
 
-    int getTotalCount(@Param("searchValue") String searchValue);
+    public List<UserDto> selectPagedMembers(int startRow, int pageSize, String searchValue) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("startRow", startRow);
+        paramMap.put("pageSize", pageSize);
+        paramMap.put("searchValue", searchValue);
 
-    UserDto getSelectUserDetail(String userid);
+        return sqlSession.selectList(NAMESPACE + ".selectPagedMembers", paramMap);
+    }
 
-    void increaseLoginFailCount(String userid);
-    void resetLoginFailCount(String userid);
-    void lockAccount(String userid);
-    void unlockAccount(String userid); // 관리자 전용
+    public int getTotalCount(String searchValue){
+        return sqlSession.selectOne(NAMESPACE + ".getTotalCount", searchValue);
+    }
 
-    int update(UserDto userDto);
+    public UserDto getSelectUserDetail(String userid){
+        return sqlSession.selectOne(NAMESPACE + ".getSelectUserDetail", userid);
+    }
 
-    void deleteUser(String userId);
+    public void increaseLoginFailCount(String userid) {
+        sqlSession.update(NAMESPACE + ".increaseLoginFailCount", userid);
+    }
 
-    void updateWriterToNull(String userId);
+    public void resetLoginFailCount(String userid) {
+        sqlSession.update(NAMESPACE + ".resetLoginFailCount", userid);
+    }
 
-    String findIdByNameAndEmail(String name, String email);
+    public void lockAccount(String userid) {
+        sqlSession.update(NAMESPACE + ".lockAccount", userid);
+    }
 
-    int checkUser(String userid, String email);
+    public void unlockAccount(String userid) {
+        sqlSession.update(NAMESPACE + ".unlockAccount", userid);
+    }
 
-    int updatePassword(String userid, String newPassword);
+    public int update(UserDto userDto)  {
+        return sqlSession.update(NAMESPACE + ".updateUser", userDto);
+    }
 
-    NaverUserInfo findByNaverId(String naverId);
+    public void deleteUser(String userId) {
+        sqlSession.delete(NAMESPACE + ".deleteUser", userId);
+    }
 
-    void insertNaverUser(NaverUserInfo user);
+    public void updateWriterToNull(String userId) {
+        sqlSession.update(NAMESPACE + ".updateWriterToNull", userId);
+    }
+
+    public String findIdByNameAndEmail(String name, String email) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("email", email);
+        return sqlSession.selectOne(NAMESPACE + ".findIdByNameAndEmail", params);
+    }
+
+    public int checkUser(String userid, String email) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("userid", userid);
+        paramMap.put("email", email);
+        return sqlSession.selectOne(NAMESPACE + ".checkUser", paramMap);
+    }
+
+    public int updatePassword(String userid, String newPassword) {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("userid", userid);
+        paramMap.put("password", newPassword);
+        return sqlSession.update(NAMESPACE + ".updatePassword", paramMap);
+    }
+
+    public NaverUserInfo findByNaverId(String naverId) {
+        return sqlSession.selectOne(NAMESPACE + ".findByNaverId", naverId);
+    }
+
+    public void insertNaverUser(NaverUserInfo user) {
+        sqlSession.insert(NAMESPACE + ".insertNaverUser", user);
+    }
 }

@@ -154,12 +154,14 @@ public class UserApiController {
 
     @PostMapping(value = "/unlockAccount", produces = "text/plain; charset=UTF-8")
     @ResponseBody
-    public String unlockAccount(@RequestParam("userid") String userid, HttpSession session) {
+    public String unlockAccount(@RequestBody Map<String, String> requestBody, HttpSession session) {
         String userRole = (String) session.getAttribute("userRole");
 
         if (!"ADMIN".equals(userRole)) {
             return "권한이 없습니다. 관리자만 사용 가능합니다.";
         }
+
+        String userid = requestBody.get("userid");
 
         try {
             userService.unlockAccount(userid);

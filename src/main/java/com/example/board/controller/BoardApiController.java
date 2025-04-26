@@ -2,14 +2,12 @@ package com.example.board.controller;
 
 import com.example.board.dto.BoardDto;
 import com.example.board.dto.PageDTO;
-import com.example.board.dto.UserDto;
 import com.example.board.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,7 @@ public class BoardApiController {
 
     @PostMapping("/board/write")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> registerMember(@RequestBody BoardDto boardDto, HttpSession httpSession) {
+    public ResponseEntity<Map<String, Object>> registerBoard(@RequestBody BoardDto boardDto, HttpSession httpSession) {
         Map<String, Object> response = new HashMap<>();
 
         // 필수 항목 검사
@@ -90,7 +88,7 @@ public class BoardApiController {
 
     @PostMapping("/board/update")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateUser(@RequestBody BoardDto boardDto) {
+    public ResponseEntity<Map<String, Object>> updateBoard(@RequestBody BoardDto boardDto) {
         Map<String, Object> response = new HashMap<>();
 
         try {

@@ -138,8 +138,8 @@
     const idPattern = /^.{8,}$/; // 아이디는 8자 이상
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/; // 비밀번호는 영문, 숫자, 특수문자 포함 8자 이상
 
-    document.querySelector("#validUserid").addEventListener("click", function () {
-        const userid = document.querySelector("#userid").value.trim();
+    document.getElementById(".validUserid").addEventListener("click", function () {
+        const userid = document.getElementById(".userid").value.trim();
         console.log("입력한 아이디:", userid);
         if (!userid) {
             alert("아이디를 입력해주세요.");

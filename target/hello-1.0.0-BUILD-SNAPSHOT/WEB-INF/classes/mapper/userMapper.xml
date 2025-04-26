@@ -1,66 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.board.dao.UserDao">
-    <resultMap id="userResultMap" type="com.example.board.dto.UserDto">
-        <result property="userid" column="userid"/>
-        <result property="passwd" column="passwd"/>
-        <result property="name" column="name"/>
-        <result property="age" column="age"/>
-        <result property="loginTime" column="loginTime"/>
-        <result property="address" column="address"/>
-        <result property="detailAddress" column="detailAddress"/>
-        <result property="fullAddress" column="fulladdress"/>
-        <result property="phone" column="phone"/>
-        <result property="email" column="email"/>
-        <result property="regDate" column="regDate"/>
-        <result property="updateDate" column="updateDate"/>
-        <result property="loginFailCount" column="login_fail_count"/>
-        <result property="accountLocked" column="account_locked"/>
-    </resultMap>
 
-    <select id="getMember" resultMap="userResultMap">
-        SELECT *
+    <!-- 재사용 가능한 SQL 정의 -->
+    <sql id="userColumns">
+        userid, passwd, name, age, loginTime, address, detailAddress, fullAddress, phone, email, regDate, updateDate, role, login_fail_count, account_locked
+    </sql>
+
+    <!-- 회원 조회 -->
+    <select id="getMember" resultType="com.example.board.dto.UserDto">
+        SELECT <include refid="userColumns" />
         FROM t_member
         WHERE userid = #{userid}
     </select>
 
+    <!-- 로그인 시간 업데이트 -->
     <update id="setLoginTime" parameterType="String">
-        update t_member set
-            loginTime=now()
-        where userid = #{userid}
+        UPDATE t_member SET loginTime = NOW() WHERE userid = #{userid}
     </update>
 
+    <!-- 회원 가입 -->
     <insert id="insert" parameterType="com.example.board.dto.UserDto">
         INSERT INTO t_member (
-        userid,
-        passwd,
-        name,
-        age,
-        loginTime,
-        address,
-        detailAddress,
-        fulladdress,
-        phone,
-        email,
-        regDate,
-        updateDate
+        <include refid="userColumns" />
         ) VALUES (
-        #{userid},
-        #{passwd},
-        #{name},
-        #{age},
-        NOW(),
-        #{address},
-        #{detailAddress},
-        #{fullAddress},
-        #{phone},
-        #{email},
-        NOW(),
-        NOW()
+        #{userid}, #{passwd}, #{name}, #{age}, NOW(), #{address}, #{detailAddress}, #{fullAddress}, #{phone}, #{email}, NOW(), NOW()
         )
     </insert>
 
-
+    <!-- 전체 회원 수 조회 -->
     <select id="getTotalCount" resultType="int">
         SELECT COUNT(*)
         FROM t_member
@@ -71,9 +39,9 @@
         </where>
     </select>
 
-    <!-- 페이징된 회원 목록 -->
+    <!-- 페이징된 회원 목록 조회 -->
     <select id="selectPagedMembers" resultType="com.example.board.dto.UserDto">
-        SELECT *
+        SELECT <include refid="userColumns" />
         FROM t_member
         <where>
             <if test="searchValue != null and searchValue != ''">
@@ -84,38 +52,42 @@
         LIMIT #{startRow}, #{pageSize}
     </select>
 
+    <!-- 회원 상세 조회 -->
     <select id="getSelectUserDetail" resultType="com.example.board.dto.UserDto">
-        SELECT *
-            FROM t_member
-        where userid = #{userid}
-
+        SELECT <include refid="userColumns" />
+        FROM t_member
+        WHERE userid = #{userid}
     </select>
 
+    <!-- 로그인 실패 횟수 증가 -->
     <update id="increaseLoginFailCount">
         UPDATE t_member
         SET login_fail_count = login_fail_count + 1
         WHERE userid = #{userid}
     </update>
 
+    <!-- 로그인 실패 횟수 초기화 -->
     <update id="resetLoginFailCount">
         UPDATE t_member
         SET login_fail_count = 0
         WHERE userid = #{userid}
     </update>
 
+    <!-- 계정 잠금 -->
     <update id="lockAccount">
         UPDATE t_member
         SET account_locked = 1
         WHERE userid = #{userid}
     </update>
 
+    <!-- 계정 잠금 해제 -->
     <update id="unlockAccount">
         UPDATE t_member
-        SET login_fail_count = 0,
-            account_locked = 0
+        SET login_fail_count = 0, account_locked = 0
         WHERE userid = #{userid}
     </update>
 
+    <!-- 회원 정보 업데이트 -->
     <update id="updateUser" parameterType="com.example.board.dto.UserDto">
         UPDATE t_member
         SET
@@ -133,21 +105,26 @@
         WHERE userid = #{userid}
     </update>
 
+    <!-- 회원 삭제 -->
     <delete id="deleteUser" parameterType="string">
         DELETE FROM t_member WHERE userid = #{userId}
     </delete>
+
+    <!-- 작성자 정보 초기화 -->
     <update id="updateWriterToNull" parameterType="String">
         UPDATE t_board
         SET writer = NULL
         WHERE writer = #{userId}
     </update>
 
+    <!-- 아이디 찾기 (이름과 이메일로) -->
     <select id="findIdByNameAndEmail" resultType="String">
         SELECT userid
         FROM t_member
         WHERE name = #{name} AND email = #{email}
     </select>
 
+    <!-- 사용자 존재 여부 체크 -->
     <select id="checkUser" resultType="int">
         SELECT COUNT(*)
         FROM t_member
@@ -161,6 +138,8 @@
         SET passwd = #{passwd}
         WHERE userid = #{userid}
     </update>
+
+    <!-- 로그인 통계 -->
     <select id="getLoginStats" resultType="map">
         SELECT
             DATE_FORMAT(loginTime, '%Y-%m-%d') AS login_day,
@@ -172,14 +151,14 @@
         ORDER BY login_day
     </select>
 
-    <select id="findByNaverId" parameterType="String" resultType="NaverUserInfo">
-        SELECT userid AS naverId,
-               email,
-               name
+    <!-- 네이버 아이디로 회원 조회 -->
+    <select id="findByNaverId" parameterType="String" resultType="com.example.board.dto.NaverUserInfo">
+        SELECT userid AS naverId, email, name
         FROM t_member
         WHERE userid = #{id}
     </select>
 
+    <!-- 네이버 회원 가입 -->
     <insert id="insertNaverUser" parameterType="com.example.board.dto.NaverUserInfo">
         INSERT INTO t_member (userid, email, name, social_type)
         VALUES (#{naverId}, #{email}, #{name}, 'naver')

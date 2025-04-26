@@ -162,15 +162,13 @@
         fetch('/api/unlockAccount', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
-            body: 'userid=' + encodeURIComponent(userid)
+            body: JSON.stringify({userid: userid})
         })
             .then(response => response.text())
             .then(result => {
                 alert(result);
-
-                // 성공 메시지일 경우에만 이동
                 if (result.includes("성공")) {
                     window.location.href = "/";
                 }
