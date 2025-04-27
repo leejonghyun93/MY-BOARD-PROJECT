@@ -3,10 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page session="false" %>
 
-<c:set var="loginId" value="${sessionScope.userid != null ? sessionScope.userid : ''}"/>
-<c:set var="loginName" value="${sessionScope.name != null ? sessionScope.name : ''}"/>
-<c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
-<c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
+
 
 <!doctype html>
 <html lang="en">

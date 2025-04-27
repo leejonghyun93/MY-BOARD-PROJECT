@@ -41,7 +41,7 @@ public class UserDto {
     private Boolean   accountLocked;
 
     public boolean isAccountLocked() {
-        return accountLocked == true ? true : false;
+        return Boolean.TRUE.equals(accountLocked);
     }
 
 

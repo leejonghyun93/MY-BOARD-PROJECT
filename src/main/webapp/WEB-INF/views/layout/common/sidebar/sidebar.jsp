@@ -2,10 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="false" %>
 
-<c:set var="loginId" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userid') != null ? pageContext.request.session.getAttribute('userid') : ''}"/>
-<c:set var="loginName" value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
-<c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
-<c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
+
 <c:set var="userRole" value="${requestScope.userRole}" />
 
 <nav class="col-md-2 d-none d-md-block bg-light sidebar">

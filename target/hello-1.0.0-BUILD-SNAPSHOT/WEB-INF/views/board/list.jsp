@@ -3,15 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page session="false" %>
 
-<c:set var="loginId"
-       value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('userid') != null ? pageContext.request.session.getAttribute('userid') : ''}"/>
-<c:set var="loginName"
-       value="${pageContext.request.getSession(false) != null && pageContext.request.session.getAttribute('name') != null ? pageContext.request.session.getAttribute('name') : ''}"/>
-<c:set var="userRole"
-       value="${pageContext.request.getSession(false) != null ? pageContext.request.session.getAttribute('userRole') : ''}"/>
 
-<c:set var="loginOutLink" value="${loginId == '' ? '/login' : ''}"/>
-<c:set var="logout" value="${loginId == '' ? 'Login' : loginName}"/>
 
 <!doctype html>
 <html lang="en">
