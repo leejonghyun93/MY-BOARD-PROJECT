@@ -5,7 +5,7 @@ MSA 1차 미니프로젝트 나만의 게시판 구현
 스프링 레거시 및 RestAPI를 이용한 나만의 게시판을 구현하였습니다. 
 
 ## 사용한 기술
-Java, Spring , myBatis, MariaDB , 부트스트랩 
+Java, Spring , myBatis, MariaDB ,HTML,CSS,JS 부트스트랩 
 
 ## 개발기간
 2025-04-18(목) ~ 2025-04.24(목)
